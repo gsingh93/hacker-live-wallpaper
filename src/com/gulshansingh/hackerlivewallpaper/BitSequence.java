@@ -1,6 +1,7 @@
 package com.gulshansingh.hackerlivewallpaper;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,7 +15,7 @@ import android.util.Log;
 
 public class BitSequence {
 
-	private ArrayList<String> bits = new ArrayList<String>();
+	private List<String> bits = new LinkedList<String>();
 
 	private Random r = new Random();
 
