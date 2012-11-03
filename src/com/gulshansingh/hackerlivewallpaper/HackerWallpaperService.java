@@ -16,22 +16,23 @@ public class HackerWallpaperService extends WallpaperService {
 	}
 	
 	public class HackerWallpaperEngine extends Engine {
+
 		private Handler handler = new Handler();
 		private boolean visible = true;
 		
+		/** The sequences to draw on the screen */
+		private List<BitSequence> sequences = new LinkedList<BitSequence>();
+
+		/**
+		 * The main runnable that is given to the Handler to draw the animation
+		 */
 		private Runnable drawRunnable = new Runnable() {
 			public void run() {
 				draw();
 			}
 		};
 		
-		private List<BitSequence> sequences = new LinkedList<BitSequence>();
-
-		@Override
-		public void onSurfaceCreated(SurfaceHolder holder) {
-			super.onSurfaceCreated(holder);
-		}
-		
+		/** Draws all of the bit sequences on the screen */
 		private void draw() {
 			SurfaceHolder holder = getSurfaceHolder();
 			Canvas c = holder.lockCanvas();
@@ -48,10 +49,17 @@ public class HackerWallpaperService extends WallpaperService {
 					holder.unlockCanvasAndPost(c);
 				}
 			}
+
+			// Remove the runnable, and only schedule the next run if visible
 			handler.removeCallbacks(drawRunnable);
 			if (visible) {
 				handler.post(drawRunnable);
 			}
+		}
+
+		@Override
+		public void onSurfaceCreated(SurfaceHolder holder) {
+			super.onSurfaceCreated(holder);
 		}
 
 		@Override
@@ -63,12 +71,12 @@ public class HackerWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format,
 				int width, int height) {
-			handler.removeCallbacks(drawRunnable);
-
 			super.onSurfaceChanged(holder, format, width, height);
-			BitSequence.configure(width, height);
-			final int numSequences = (int) (width / BitSequence.getWidth());
 
+			handler.removeCallbacks(drawRunnable);
+			BitSequence.configure(width, height);
+
+			int numSequences = (int) (width / BitSequence.getWidth());
 
 			// Initialize BitSequences
 			sequences.clear();
