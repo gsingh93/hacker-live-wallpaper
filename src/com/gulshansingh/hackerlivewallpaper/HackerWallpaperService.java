@@ -6,6 +6,7 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class HackerWallpaperService extends WallpaperService {
@@ -28,6 +29,7 @@ public class HackerWallpaperService extends WallpaperService {
 		 */
 		private Runnable drawRunnable = new Runnable() {
 			public void run() {
+				Log.d("TAG", "Running");
 				draw();
 			}
 		};

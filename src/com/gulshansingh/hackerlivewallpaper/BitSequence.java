@@ -50,9 +50,28 @@ public class BitSequence {
 	/** The increment at which the alpha of the bit sequence should increase */
 	private static final int INCREMENT = 255 / NUM_BITS;
 
+	private static final int TEXT_SIZE = 36;
 
 	private final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
+
+	/**
+	 * A runnable that changes the bit, moves the sequence down, and reschedules
+	 * its execution
+	 */
+	private final Runnable changeBitRunnable = new Runnable() {
+		public void run() {
+			changeBit();
+			y += TEXT_SIZE;
+			if (y > HEIGHT) {
+				y = -1 * TEXT_SIZE * NUM_BITS;
+				ScheduledFuture<?> futurePrev = future;
+				future = scheduler.scheduleAtFixedRate(this, r.nextInt(6000),
+						SPEED, TimeUnit.MILLISECONDS);
+				futurePrev.cancel(true);
+			}
+		}
+	};
 
 	/**
 	 * Configures the BitSequence based on the display
@@ -72,22 +91,10 @@ public class BitSequence {
 		}
 
 		this.x = x;
-		y = -1 * paint.getTextSize() * NUM_BITS;
+		this.y = -1 * TEXT_SIZE * NUM_BITS;
 		initPaint();
-		final Runnable runnable = new Runnable() {
-			public void run() {
-				changeBit();
-				y += paint.getTextSize();
-				if (y > HEIGHT) {
-					y = -1 * paint.getTextSize() * NUM_BITS;
-					ScheduledFuture<?> futurePrev = future;
-					future = scheduler.scheduleAtFixedRate(this,
-							r.nextInt(6000), SPEED, TimeUnit.MILLISECONDS);
-					futurePrev.cancel(true);
-				}
-			}
-		};
-		future = scheduler.scheduleAtFixedRate(runnable, r.nextInt(6000),
+
+		future = scheduler.scheduleAtFixedRate(changeBitRunnable, r.nextInt(6000),
 				SPEED, TimeUnit.MILLISECONDS);
 	}
 
@@ -99,7 +106,7 @@ public class BitSequence {
 
 	/** Initializes the {@link Paint} object */
 	private void initPaint() {
-		paint.setTextSize(36);
+		paint.setTextSize(TEXT_SIZE);
 		paint.setColor(Color.GREEN);
 	}
 
@@ -136,7 +143,7 @@ public class BitSequence {
 		float prevY = y;
 		for (String bit : bits) {
 			canvas.drawText(bit, x, y, paint);
-			y += paint.getTextSize();
+			y += TEXT_SIZE;
 			paint.setAlpha(paint.getAlpha() + INCREMENT);
 		}
 		x = prevX;
