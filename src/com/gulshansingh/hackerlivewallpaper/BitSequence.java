@@ -54,7 +54,7 @@ public class BitSequence {
 
 	private final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
-
+	
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
 	 * its execution
@@ -65,13 +65,44 @@ public class BitSequence {
 			y += TEXT_SIZE;
 			if (y > HEIGHT) {
 				y = -1 * TEXT_SIZE * NUM_BITS;
-				ScheduledFuture<?> futurePrev = future;
-				future = scheduler.scheduleAtFixedRate(this, r.nextInt(6000),
-						SPEED, TimeUnit.MILLISECONDS);
-				futurePrev.cancel(true);
+				scheduleThread();
 			}
 		}
 	};
+
+	private boolean pause = false;
+	public void pause() {
+		if (!pause) {
+			if (future != null) {
+				future.cancel(true);
+			}
+			pause = true;
+		}
+	}
+
+	public void unpause() {
+		if (pause) {
+			if (y < 0 || y > HEIGHT) {
+				scheduleThread();
+			} else {
+				future = scheduler.scheduleAtFixedRate(changeBitRunnable, 0,
+						SPEED, TimeUnit.MILLISECONDS);
+			}
+			pause = false;
+		}
+	}
+
+	/**
+	 * Schedules the changeBitRunnable, cancelling the previous scheduled future
+	 */
+	public void scheduleThread() {
+		ScheduledFuture<?> futurePrev = future;
+		future = scheduler.scheduleAtFixedRate(changeBitRunnable,
+				r.nextInt(6000), SPEED, TimeUnit.MILLISECONDS);
+		if (futurePrev != null) {
+			futurePrev.cancel(true);
+		}
+	}
 
 	/**
 	 * Configures the BitSequence based on the display
@@ -94,8 +125,7 @@ public class BitSequence {
 		this.y = -1 * TEXT_SIZE * NUM_BITS;
 		initPaint();
 
-		future = scheduler.scheduleAtFixedRate(changeBitRunnable, r.nextInt(6000),
-				SPEED, TimeUnit.MILLISECONDS);
+		scheduleThread();
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */

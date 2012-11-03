@@ -6,7 +6,6 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class HackerWallpaperService extends WallpaperService {
@@ -29,7 +28,6 @@ public class HackerWallpaperService extends WallpaperService {
 		 */
 		private Runnable drawRunnable = new Runnable() {
 			public void run() {
-				Log.d("TAG", "Running");
 				draw();
 			}
 		};
@@ -56,6 +54,22 @@ public class HackerWallpaperService extends WallpaperService {
 			handler.removeCallbacks(drawRunnable);
 			if (visible) {
 				handler.post(drawRunnable);
+			} else {
+				stop();
+			}
+		}
+
+		private void stop() {
+			handler.removeCallbacks(drawRunnable);
+			for (BitSequence sequence : sequences) {
+				sequence.pause();
+			}
+		}
+
+		private void start() {
+			handler.post(drawRunnable);
+			for (BitSequence sequence : sequences) {
+				sequence.unpause();
 			}
 		}
 
@@ -67,7 +81,7 @@ public class HackerWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
 			super.onSurfaceDestroyed(holder);
-			handler.removeCallbacks(drawRunnable);
+			stop();
 		}
 
 		@Override
@@ -75,7 +89,6 @@ public class HackerWallpaperService extends WallpaperService {
 				int width, int height) {
 			super.onSurfaceChanged(holder, format, width, height);
 
-			handler.removeCallbacks(drawRunnable);
 			BitSequence.configure(width, height);
 
 			int numSequences = (int) (width / BitSequence.getWidth());
@@ -86,17 +99,15 @@ public class HackerWallpaperService extends WallpaperService {
 				sequences.add(new BitSequence(
 						(int) (i * BitSequence.getWidth())));
 			}
-
-			handler.post(drawRunnable);
 		}
 
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			super.onVisibilityChanged(visible);
 			if (visible) {
-				handler.post(drawRunnable);
+				start();
 			} else {
-				handler.removeCallbacks(drawRunnable);
+				stop();
 			}
 			this.visible = visible;
 		}
