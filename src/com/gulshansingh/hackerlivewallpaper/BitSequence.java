@@ -52,7 +52,7 @@ public class BitSequence {
 
 
 	private final ScheduledExecutorService scheduler = Executors
-			.newScheduledThreadPool(1);
+			.newSingleThreadScheduledExecutor();
 
 	/**
 	 * Configures the BitSequence based on the display
