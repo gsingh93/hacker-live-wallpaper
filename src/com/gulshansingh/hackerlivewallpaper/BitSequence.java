@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 public class BitSequence {
 
@@ -85,7 +84,6 @@ public class BitSequence {
 		float prevX = x;
 		float prevY = y;
 		for (String bit : bits) {
-			Log.d("TAG", String.valueOf(y));
 			canvas.drawText(bit, x, y, paint);
 			y += paint.getTextSize();
 			paint.setAlpha(paint.getAlpha() + INCREMENT);

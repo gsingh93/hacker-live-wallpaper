@@ -1,6 +1,7 @@
 package com.gulshansingh.hackerlivewallpaper;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.graphics.Canvas;
 import android.os.Handler;
@@ -24,7 +25,7 @@ public class HackerWallpaperService extends WallpaperService {
 			}
 		};
 		
-		private Vector<BitSequence> sequences = new Vector<BitSequence>();
+		private List<BitSequence> sequences = new LinkedList<BitSequence>();
 
 		@Override
 		public void onSurfaceCreated(SurfaceHolder holder) {
@@ -68,9 +69,9 @@ public class HackerWallpaperService extends WallpaperService {
 			BitSequence.configure(width, height);
 			final int numSequences = (int) (width / BitSequence.getWidth());
 
-			sequences.ensureCapacity(numSequences);
 
 			// Initialize BitSequences
+			sequences.clear();
 			for (int i = 0; i < numSequences; i++) {
 				sequences.add(new BitSequence(
 						(int) (i * BitSequence.getWidth())));
