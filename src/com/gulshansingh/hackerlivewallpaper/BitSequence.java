@@ -56,6 +56,9 @@ public class BitSequence {
 	/** The font size for the bits */
 	private static final int TEXT_SIZE = 36;
 
+	/** The initial starting point for all BitSequences */
+	private static final int INITIAL_Y = -1 * TEXT_SIZE * NUM_BITS;
+
 	private final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
 	
@@ -68,7 +71,7 @@ public class BitSequence {
 			changeBit();
 			y += TEXT_SIZE;
 			if (y > HEIGHT) {
-				y = -1 * TEXT_SIZE * NUM_BITS;
+				y = INITIAL_Y;
 				scheduleThread();
 			}
 		}
@@ -133,7 +136,7 @@ public class BitSequence {
 		}
 
 		this.x = x;
-		this.y = -1 * TEXT_SIZE * NUM_BITS;
+		this.y = INITIAL_Y;
 		initPaint();
 
 		scheduleThread();
