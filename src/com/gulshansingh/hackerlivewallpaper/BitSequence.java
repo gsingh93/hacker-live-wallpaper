@@ -99,20 +99,31 @@ public class BitSequence {
 			if (y < 0 || y > HEIGHT) {
 				scheduleThread();
 			} else {
-				future = scheduler.scheduleAtFixedRate(changeBitRunnable, 0,
-						SPEED, TimeUnit.MILLISECONDS);
+				scheduleThread(0);
 			}
 			pause = false;
 		}
 	}
 
 	/**
-	 * Schedules the changeBitRunnable, cancelling the previous scheduled future
+	 * Schedules the changeBitRunnable with a random delay less than 6000
+	 * milliseconds, cancelling the previous scheduled future
 	 */
-	public void scheduleThread() {
+	private void scheduleThread() {
+		scheduleThread(r.nextInt(6000));
+	}
+
+	/**
+	 * Schedules the changeBitRunnable with the specified delay, cancelling the
+	 * previous scheduled future
+	 * 
+	 * @param delay
+	 *            the delay in milliseconds
+	 */
+	private void scheduleThread(int delay) {
 		ScheduledFuture<?> futurePrev = future;
-		future = scheduler.scheduleAtFixedRate(changeBitRunnable,
-				r.nextInt(6000), SPEED, TimeUnit.MILLISECONDS);
+		future = scheduler.scheduleAtFixedRate(changeBitRunnable, delay, SPEED,
+				TimeUnit.MILLISECONDS);
 		if (futurePrev != null) {
 			futurePrev.cancel(true);
 		}
@@ -143,7 +154,7 @@ public class BitSequence {
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */
-	synchronized public void changeBit() {
+	synchronized private void changeBit() {
 		bits.remove(0);
 		bits.add(getRandomBit(r));
 	}
