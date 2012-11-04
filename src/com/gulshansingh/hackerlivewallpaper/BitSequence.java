@@ -96,7 +96,7 @@ public class BitSequence {
 	 */
 	public void unpause() {
 		if (pause) {
-			if (y < 0 || y > HEIGHT) {
+			if (y <= INITIAL_Y + TEXT_SIZE || y > HEIGHT) {
 				scheduleThread();
 			} else {
 				scheduleThread(0);
