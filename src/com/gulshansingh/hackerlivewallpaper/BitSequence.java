@@ -38,6 +38,9 @@ public class BitSequence {
 	/** The paint style for the bits */
 	private static Paint paint = new Paint();
 
+	/** True when the BitSequence should be paused */
+	private boolean pause = false;
+
 	/** The height of the screen */
 	private static int HEIGHT;
 
@@ -50,6 +53,7 @@ public class BitSequence {
 	/** The increment at which the alpha of the bit sequence should increase */
 	private static final int INCREMENT = 255 / NUM_BITS;
 
+	/** The font size for the bits */
 	private static final int TEXT_SIZE = 36;
 
 	private final ScheduledExecutorService scheduler = Executors
@@ -70,7 +74,9 @@ public class BitSequence {
 		}
 	};
 
-	private boolean pause = false;
+	/**
+	 * Pauses the BitSequence by cancelling the ScheduledFuture
+	 */
 	public void pause() {
 		if (!pause) {
 			if (future != null) {
@@ -80,6 +86,11 @@ public class BitSequence {
 		}
 	}
 
+	/**
+	 * Unpauses the BitSequence by scheduling BitSequences on the screen to
+	 * immediately start, and scheduling BitSequences off the screen to start
+	 * after some delay
+	 */
 	public void unpause() {
 		if (pause) {
 			if (y < 0 || y > HEIGHT) {
