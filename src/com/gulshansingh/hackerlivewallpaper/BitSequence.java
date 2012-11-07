@@ -62,12 +62,19 @@ public class BitSequence {
 	private final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
 	
+	/** This string is stored so it does not need to be created multiple times */
+	private static final String zero = "0";
+
+	/** This string is stored so it does not need to be created multiple times */
+	private static final String one = "1";
+	
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
 	 * its execution
 	 */
 	private final Runnable changeBitRunnable = new Runnable() {
 		public void run() {
+			// Log.d("TAG", "Running");
 			changeBit();
 			y += TEXT_SIZE;
 			if (y > HEIGHT) {
@@ -174,7 +181,11 @@ public class BitSequence {
 	 */
 	private String getRandomBit(Random r) {
 		int bit = r.nextInt(2);
-		return String.valueOf(bit);
+		if (bit == 0) {
+			return zero;
+		} else {
+			return one;
+		}
 	}
 	
 	/**
