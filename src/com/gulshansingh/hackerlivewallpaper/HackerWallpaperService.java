@@ -1,6 +1,6 @@
 package com.gulshansingh.hackerlivewallpaper;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
@@ -21,7 +21,7 @@ public class HackerWallpaperService extends WallpaperService {
 		private boolean visible = true;
 		
 		/** The sequences to draw on the screen */
-		private List<BitSequence> sequences = new LinkedList<BitSequence>();
+		private List<BitSequence> sequences = new ArrayList<BitSequence>();
 
 		/**
 		 * The main runnable that is given to the Handler to draw the animation
@@ -40,8 +40,8 @@ public class HackerWallpaperService extends WallpaperService {
 				if (c != null) {
 					c.drawARGB(255, 0, 0, 0);
 
-					for (BitSequence sequence : sequences) {
-						sequence.draw(c);
+					for (int i = 0; i < sequences.size(); i++) {
+						sequences.get(i).draw(c);
 					}
 				}
 			} finally {
@@ -61,15 +61,15 @@ public class HackerWallpaperService extends WallpaperService {
 
 		private void stop() {
 			handler.removeCallbacks(drawRunnable);
-			for (BitSequence sequence : sequences) {
-				sequence.pause();
+			for (int i = 0; i < sequences.size(); i++) {
+				sequences.get(i).pause();
 			}
 		}
 
 		private void start() {
 			handler.post(drawRunnable);
-			for (BitSequence sequence : sequences) {
-				sequence.unpause();
+			for (int i = 0; i < sequences.size(); i++) {
+				sequences.get(i).unpause();
 			}
 		}
 
