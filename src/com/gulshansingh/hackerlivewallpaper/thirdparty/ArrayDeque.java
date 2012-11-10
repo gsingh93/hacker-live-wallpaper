@@ -942,6 +942,6 @@ public class ArrayDeque<E> extends AbstractCollection<E>
     }
     
 	public E get(int index) {
-		return elements[(head + index) % size()];
+		return elements[(head + index) % elements.length];
 	}
 }
