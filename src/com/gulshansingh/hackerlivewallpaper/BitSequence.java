@@ -1,7 +1,5 @@
 package com.gulshansingh.hackerlivewallpaper;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
+import com.gulshansingh.hackerlivewallpaper.thirdparty.ArrayDeque;
 
 /**
  * A class that stores a list of bits. The first bit is removed and a new bit is
@@ -24,7 +24,7 @@ import android.graphics.Paint;
 public class BitSequence {
 
 	/** The bits this sequence stores */
-	private List<String> bits = new LinkedList<String>();
+	private ArrayDeque<String> bits = new ArrayDeque<String>();
 
 	/** A variable used for all operations needing random numbers */
 	private Random r = new Random();
@@ -162,8 +162,8 @@ public class BitSequence {
 
 	/** Shifts the bits back by one and adds a new bit to the end */
 	synchronized private void changeBit() {
-		bits.remove(0);
-		bits.add(getRandomBit(r));
+		bits.removeFirst();
+		bits.addLast(getRandomBit(r));
 	}
 
 	/** Initializes the {@link Paint} object */
@@ -207,8 +207,8 @@ public class BitSequence {
 		paint.setAlpha(0);
 		float prevX = x;
 		float prevY = y;
-		for (String bit : bits) {
-			canvas.drawText(bit, x, y, paint);
+		for (int i = 0; i < bits.size(); i++) {
+			canvas.drawText(bits.get(i), x, y, paint);
 			y += TEXT_SIZE;
 			paint.setAlpha(paint.getAlpha() + INCREMENT);
 		}
