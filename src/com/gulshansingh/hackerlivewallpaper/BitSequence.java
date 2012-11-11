@@ -6,6 +6,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import android.graphics.BlurMaskFilter;
+import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,7 +38,7 @@ public class BitSequence {
 	float x, y;
 
 	/** The paint style for the bits */
-	private static Paint paint = new Paint();
+	private Paint paint = new Paint();
 
 	/** True when the BitSequence should be paused */
 	private boolean pause = false;
@@ -68,6 +70,14 @@ public class BitSequence {
 	/** This string is stored so it does not need to be created multiple times */
 	private static final String one = "1";
 	
+	/** The Mask to use for blurred text */
+	private static final BlurMaskFilter blurredFilter = new BlurMaskFilter(3,
+			Blur.NORMAL);
+
+	/** The Mask to use for regular text */
+	private static final BlurMaskFilter regularFilter = new BlurMaskFilter(1,
+			Blur.NORMAL);
+
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
 	 * its execution
@@ -80,6 +90,7 @@ public class BitSequence {
 			if (y > HEIGHT) {
 				y = INITIAL_Y;
 				scheduleThread();
+				setMaskFilter();
 			}
 		}
 	};
@@ -170,6 +181,16 @@ public class BitSequence {
 	private void initPaint() {
 		paint.setTextSize(TEXT_SIZE);
 		paint.setColor(Color.GREEN);
+		setMaskFilter();
+	}
+
+	private void setMaskFilter() {
+		int blur = r.nextInt(4);
+		if (blur == 0) {
+			paint.setMaskFilter(blurredFilter);
+		} else {
+			paint.setMaskFilter(regularFilter);
+		}
 	}
 
 	/**
@@ -194,6 +215,8 @@ public class BitSequence {
 	 * @return the width of the BitSequence
 	 */
 	public static float getWidth() {
+		Paint paint = new Paint();
+		paint.setTextSize(TEXT_SIZE);
 		return paint.measureText("0");
 	}
 
