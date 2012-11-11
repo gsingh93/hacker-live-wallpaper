@@ -91,13 +91,13 @@ public class HackerWallpaperService extends WallpaperService {
 
 			BitSequence.configure(width, height);
 
-			int numSequences = (int) (width / BitSequence.getWidth());
+			int numSequences = (int) (1.5 * width / BitSequence.getWidth());
 
 			// Initialize BitSequences
 			sequences.clear();
 			for (int i = 0; i < numSequences; i++) {
 				sequences.add(new BitSequence(
-						(int) (i * BitSequence.getWidth())));
+						(int) (i * BitSequence.getWidth() / 1.5)));
 			}
 		}
 

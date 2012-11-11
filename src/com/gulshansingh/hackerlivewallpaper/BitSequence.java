@@ -47,7 +47,7 @@ public class BitSequence {
 	private static int HEIGHT;
 
 	/** The number of bits this bit sequence should hold */
-	private static final int NUM_BITS = 10;
+	private static final int NUM_BITS = 13;
 
 	/** The speed at which bits should be changed */
 	private static final int SPEED = 100;
@@ -71,12 +71,17 @@ public class BitSequence {
 	private static final String one = "1";
 	
 	/** The Mask to use for blurred text */
-	private static final BlurMaskFilter blurredFilter = new BlurMaskFilter(3,
+	private static final BlurMaskFilter blurFilter = new BlurMaskFilter(3,
 			Blur.NORMAL);
 
+	/** The Mask to use for slightly blurred text */
+	private static final BlurMaskFilter slightBlurFilter = new BlurMaskFilter(
+			2, Blur.NORMAL);
+
 	/** The Mask to use for regular text */
-	private static final BlurMaskFilter regularFilter = new BlurMaskFilter(1,
-			Blur.NORMAL);
+	private static final BlurMaskFilter regularFilter = null;// new
+																// BlurMaskFilter(1,
+																// Blur.NORMAL);
 
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
@@ -94,6 +99,30 @@ public class BitSequence {
 			}
 		}
 	};
+
+	/**
+	 * Configures the BitSequence based on the display
+	 * 
+	 * @param width
+	 *            the width of the screen
+	 * @param height
+	 *            the height of the screen
+	 */
+	public static void configure(int width, int height) {
+		HEIGHT = height;
+	}
+
+	public BitSequence(int x) {
+		for (int i = 0; i < NUM_BITS; i++) {
+			bits.add(getRandomBit(r));
+		}
+
+		this.x = x;
+		this.y = INITIAL_Y;
+		initPaint();
+
+		scheduleThread();
+	}
 
 	/**
 	 * Pauses the BitSequence by cancelling the ScheduledFuture
@@ -147,30 +176,6 @@ public class BitSequence {
 		}
 	}
 
-	/**
-	 * Configures the BitSequence based on the display
-	 * 
-	 * @param width
-	 *            the width of the screen
-	 * @param height
-	 *            the height of the screen
-	 */
-	public static void configure(int width, int height) {
-		HEIGHT = height;
-	}
-
-	public BitSequence(int x) {
-		for (int i = 0; i < NUM_BITS; i++) {
-			bits.add(getRandomBit(r));
-		}
-
-		this.x = x;
-		this.y = INITIAL_Y;
-		initPaint();
-
-		scheduleThread();
-	}
-
 	/** Shifts the bits back by one and adds a new bit to the end */
 	synchronized private void changeBit() {
 		bits.removeFirst();
@@ -187,7 +192,9 @@ public class BitSequence {
 	private void setMaskFilter() {
 		int blur = r.nextInt(4);
 		if (blur == 0) {
-			paint.setMaskFilter(blurredFilter);
+			paint.setMaskFilter(blurFilter);
+		} else if (blur == 1) {
+			paint.setMaskFilter(slightBlurFilter);
 		} else {
 			paint.setMaskFilter(regularFilter);
 		}
@@ -228,14 +235,12 @@ public class BitSequence {
 	 */
 	synchronized public void draw(Canvas canvas) {
 		paint.setAlpha(0);
-		float prevX = x;
 		float prevY = y;
 		for (int i = 0; i < bits.size(); i++) {
 			canvas.drawText(bits.get(i), x, y, paint);
 			y += TEXT_SIZE;
 			paint.setAlpha(paint.getAlpha() + INCREMENT);
 		}
-		x = prevX;
 		y = prevY;
 	}
 }
