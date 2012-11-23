@@ -89,7 +89,6 @@ public class BitSequence {
 	 */
 	private final Runnable changeBitRunnable = new Runnable() {
 		public void run() {
-			// Log.d("TAG", "Running");
 			changeBit();
 			y += TEXT_SIZE;
 			if (y > HEIGHT) {
@@ -168,12 +167,10 @@ public class BitSequence {
 	 *            the delay in milliseconds
 	 */
 	private void scheduleThread(int delay) {
-		ScheduledFuture<?> futurePrev = future;
+		if (future != null)
+			future.cancel(true);
 		future = scheduler.scheduleAtFixedRate(changeBitRunnable, delay, SPEED,
 				TimeUnit.MILLISECONDS);
-		if (futurePrev != null) {
-			futurePrev.cancel(true);
-		}
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */
