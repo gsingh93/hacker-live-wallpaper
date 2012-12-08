@@ -1,0 +1,3 @@
+[submodule "contrib/HoloEverywhere"]
+	path = contrib/HoloEverywhere
+	url = git://github.com/ChristopheVersieux/HoloEverywhere.git
