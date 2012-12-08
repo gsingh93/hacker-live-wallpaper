@@ -9,17 +9,17 @@ import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
 
 public class HackerWallpaperService extends WallpaperService {
-    
+
 	@Override
 	public Engine onCreateEngine() {
 		return new HackerWallpaperEngine();
 	}
-	
+
 	public class HackerWallpaperEngine extends Engine {
 
 		private Handler handler = new Handler();
 		private boolean visible = true;
-		
+
 		/** The sequences to draw on the screen */
 		private List<BitSequence> sequences = new ArrayList<BitSequence>();
 
@@ -31,28 +31,30 @@ public class HackerWallpaperService extends WallpaperService {
 				draw();
 			}
 		};
-		
+
 		/** Draws all of the bit sequences on the screen */
 		private void draw() {
-			SurfaceHolder holder = getSurfaceHolder();
-			Canvas c = holder.lockCanvas();
-			try {
-				if (c != null) {
-					c.drawARGB(255, 0, 0, 0);
+			if (visible) {
+				SurfaceHolder holder = getSurfaceHolder();
+				Canvas c = holder.lockCanvas();
+				try {
+					if (c != null) {
+						c.drawARGB(255, 0, 0, 0);
 
-					for (int i = 0; i < sequences.size(); i++) {
-						sequences.get(i).draw(c);
+						for (int i = 0; i < sequences.size(); i++) {
+							sequences.get(i).draw(c);
+						}
+					}
+				} finally {
+					if (c != null) {
+						holder.unlockCanvasAndPost(c);
 					}
 				}
-			} finally {
-				if (c != null) {
-					holder.unlockCanvasAndPost(c);
-				}
-			}
 
-			// Remove the runnable, and only schedule the next run if visible
-			handler.removeCallbacks(drawRunnable);
-			if (visible) {
+				// Remove the runnable, and only schedule the next run if
+				// visible
+				handler.removeCallbacks(drawRunnable);
+
 				handler.post(drawRunnable);
 			} else {
 				stop();
