@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:holo="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.gulshansingh.hackerlivewallpaper.settings.SeekBarPreference
+        android:max="20"
+        holo:defaultValue="10"
+        holo:key="num_bits"
+        holo:title="Number of Bits" />
+
+</PreferenceScreen>

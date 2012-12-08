@@ -5,7 +5,8 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="16" />
+
     <uses-feature android:name="android.software.live_wallpaper" />
 
     <application
@@ -14,15 +15,22 @@
         android:theme="@style/AppTheme" >
         <service
             android:name=".HackerWallpaperService"
-            android:label="@string/app_name" 
+            android:label="@string/app_name"
             android:permission="android.permission.BIND_WALLPAPER" >
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
-            <meta-data 
+
+            <meta-data
                 android:name="android.service.wallpaper"
-        		android:resource="@xml/hacker_wp" />
+                android:resource="@xml/hacker_wp" />
         </service>
+
+        <activity android:name="com.gulshansingh.hackerlivewallpaper.SettingsActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
