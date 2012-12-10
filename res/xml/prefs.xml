@@ -4,7 +4,7 @@
 
     <com.gulshansingh.hackerlivewallpaper.settings.SeekBarPreference
         android:max="20"
-        holo:defaultValue="10"
+        holo:defaultValue="@integer/default_num_bits"
         holo:key="num_bits"
         holo:title="Number of Bits" />
 

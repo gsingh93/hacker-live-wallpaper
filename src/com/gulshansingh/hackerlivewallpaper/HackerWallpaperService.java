@@ -78,6 +78,7 @@ public class HackerWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceCreated(SurfaceHolder holder) {
 			super.onSurfaceCreated(holder);
+			BitSequence.configure(getApplicationContext());
 		}
 
 		@Override

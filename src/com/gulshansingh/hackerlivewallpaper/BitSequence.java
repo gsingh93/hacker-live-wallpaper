@@ -6,6 +6,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.holoeverywhere.preference.PreferenceManager;
+import org.holoeverywhere.preference.SharedPreferences;
+
+import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
@@ -47,29 +51,30 @@ public class BitSequence {
 	private static int HEIGHT;
 
 	/** The number of bits this bit sequence should hold */
-	private static final int NUM_BITS = 13;
+	private static int NUM_BITS;
 
 	/** The speed at which bits should be changed */
 	private static final int SPEED = 100;
 
 	/** The increment at which the alpha of the bit sequence should increase */
-	private static final int INCREMENT = 255 / NUM_BITS;
+	private static int INCREMENT;
 
 	/** The font size for the bits */
 	private static final int TEXT_SIZE = 36;
 
 	/** The initial starting point for all BitSequences */
-	private static final int INITIAL_Y = -1 * TEXT_SIZE * NUM_BITS;
+	private static int INITIAL_Y;
 
+	private static final int MAX_ALPHA = 240;
 	private final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
-	
+
 	/** This string is stored so it does not need to be created multiple times */
 	private static final String zero = "0";
 
 	/** This string is stored so it does not need to be created multiple times */
 	private static final String one = "1";
-	
+
 	/** The Mask to use for blurred text */
 	private static final BlurMaskFilter blurFilter = new BlurMaskFilter(3,
 			Blur.NORMAL);
@@ -100,6 +105,16 @@ public class BitSequence {
 	};
 
 	/**
+	 * Configures any BitSequences parameters requiring the application context
+	 * 
+	 * @param context
+	 *            the application context
+	 */
+	public static void configure(Context context) {
+		initParameters(context);
+	}
+
+	/**
 	 * Configures the BitSequence based on the display
 	 * 
 	 * @param width
@@ -121,6 +136,21 @@ public class BitSequence {
 		initPaint();
 
 		scheduleThread();
+	}
+
+	/**
+	 * Configures the BitSequence parameters
+	 * 
+	 * @param context
+	 *            the application context used to access preferences
+	 */
+	private static void initParameters(Context context) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		NUM_BITS = preferences.getInt("num_bits", context.getResources()
+				.getInteger(R.integer.default_num_bits));
+		INCREMENT = MAX_ALPHA / NUM_BITS;
+		INITIAL_Y = -1 * TEXT_SIZE * NUM_BITS;
 	}
 
 	/**
@@ -212,7 +242,7 @@ public class BitSequence {
 			return one;
 		}
 	}
-	
+
 	/**
 	 * Gets the width the BitSequence would be on the screen
 	 * 
@@ -231,7 +261,7 @@ public class BitSequence {
 	 *            the {@link Canvas} on which to draw the BitSequence
 	 */
 	synchronized public void draw(Canvas canvas) {
-		paint.setAlpha(0);
+		paint.setAlpha(INCREMENT);
 		float prevY = y;
 		for (int i = 0; i < bits.size(); i++) {
 			canvas.drawText(bits.get(i), x, y, paint);
