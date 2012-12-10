@@ -29,46 +29,6 @@ import com.gulshansingh.hackerlivewallpaper.thirdparty.ArrayDeque;
  */
 public class BitSequence {
 
-	/** The bits this sequence stores */
-	private ArrayDeque<String> bits = new ArrayDeque<String>();
-
-	/** A variable used for all operations needing random numbers */
-	private Random r = new Random();
-
-	/** The scheduled operation for changing a bit and shifting downwards */
-	private ScheduledFuture<?> future;
-
-	/** The position to draw the sequence at on the screen */
-	float x, y;
-
-	/** The paint style for the bits */
-	private Paint paint = new Paint();
-
-	/** True when the BitSequence should be paused */
-	private boolean pause = false;
-
-	/** The height of the screen */
-	private static int HEIGHT;
-
-	/** The number of bits this bit sequence should hold */
-	private static int NUM_BITS;
-
-	/** The speed at which bits should be changed */
-	private static final int SPEED = 100;
-
-	/** The increment at which the alpha of the bit sequence should increase */
-	private static int INCREMENT;
-
-	/** The font size for the bits */
-	private static final int TEXT_SIZE = 36;
-
-	/** The initial starting point for all BitSequences */
-	private static int INITIAL_Y;
-
-	private static final int MAX_ALPHA = 240;
-	private final ScheduledExecutorService scheduler = Executors
-			.newSingleThreadScheduledExecutor();
-
 	/** This string is stored so it does not need to be created multiple times */
 	private static final String zero = "0";
 
@@ -88,6 +48,51 @@ public class BitSequence {
 																// BlurMaskFilter(1,
 																// Blur.NORMAL);
 
+	/** The maximum alpha a bit can have */
+	private static final int MAX_ALPHA = 240;
+
+	/** The font size for the bits */
+	private static int TEXT_SIZE;
+
+	/** The speed at which bits should be changed */
+	private static int CHANGE_BIT_SPEED;
+
+	/** The speed at which to move down the screen */
+	private static int FALLING_SPEED = TEXT_SIZE;
+
+	/** The height of the screen */
+	private static int HEIGHT;
+
+	/** The number of bits this bit sequence should hold */
+	private static int NUM_BITS;
+
+	/** The increment at which the alpha of the bit sequence should increase */
+	private static int INCREMENT;
+
+	/** The initial starting point for all BitSequences */
+	private static int INITIAL_Y;
+
+	/** The bits this sequence stores */
+	private ArrayDeque<String> bits = new ArrayDeque<String>();
+
+	/** A variable used for all operations needing random numbers */
+	private Random r = new Random();
+
+	/** The scheduled operation for changing a bit and shifting downwards */
+	private ScheduledFuture<?> future;
+
+	/** The position to draw the sequence at on the screen */
+	float x, y;
+
+	/** The paint style for the bits */
+	private Paint paint = new Paint();
+
+	/** True when the BitSequence should be paused */
+	private boolean pause = false;
+
+	private final ScheduledExecutorService scheduler = Executors
+			.newSingleThreadScheduledExecutor();
+
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
 	 * its execution
@@ -95,7 +100,7 @@ public class BitSequence {
 	private final Runnable changeBitRunnable = new Runnable() {
 		public void run() {
 			changeBit();
-			y += TEXT_SIZE;
+			y += FALLING_SPEED;
 			if (y > HEIGHT) {
 				y = INITIAL_Y;
 				scheduleThread();
@@ -147,10 +152,19 @@ public class BitSequence {
 	private static void initParameters(Context context) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
+		TEXT_SIZE = preferences.getInt("text_size", context.getResources()
+				.getInteger(R.integer.default_text_size));
 		NUM_BITS = preferences.getInt("num_bits", context.getResources()
 				.getInteger(R.integer.default_num_bits));
 		INCREMENT = MAX_ALPHA / NUM_BITS;
 		INITIAL_Y = -1 * TEXT_SIZE * NUM_BITS;
+
+		FALLING_SPEED = 36;
+		CHANGE_BIT_SPEED = 100;
+		// FALLING_SPEED = preferences.getInt("falling_speed", context
+		// .getResources().getInteger(R.integer.default_falling_speed));
+		// CHANGE_BIT_SPEED = preferences.getInt("change_bit_speed", context
+		// .getResources().getInteger(R.integer.default_change_bit_speed));
 	}
 
 	/**
@@ -199,8 +213,8 @@ public class BitSequence {
 	private void scheduleThread(int delay) {
 		if (future != null)
 			future.cancel(true);
-		future = scheduler.scheduleAtFixedRate(changeBitRunnable, delay, SPEED,
-				TimeUnit.MILLISECONDS);
+		future = scheduler.scheduleAtFixedRate(changeBitRunnable, delay,
+				CHANGE_BIT_SPEED, TimeUnit.MILLISECONDS);
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */
