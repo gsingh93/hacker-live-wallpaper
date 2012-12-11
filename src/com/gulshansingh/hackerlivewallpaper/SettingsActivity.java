@@ -51,6 +51,11 @@ public class SettingsActivity extends PreferenceActivity {
 		ColorPickerPreference pref = (ColorPickerPreference) findPreference("bit_color");
 		int defaultColor = getResources().getColor(R.color.green);
 		pref.onColorChanged(defaultColor);
+	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		BitSequence.configure(this);
 	}
 }

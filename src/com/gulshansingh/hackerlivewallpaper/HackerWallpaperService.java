@@ -10,6 +10,12 @@ import android.view.SurfaceHolder;
 
 public class HackerWallpaperService extends WallpaperService {
 
+	private static boolean reset = false;
+
+	public static void reset() {
+		reset = true;
+	}
+
 	@Override
 	public Engine onCreateEngine() {
 		return new HackerWallpaperEngine();
@@ -32,9 +38,14 @@ public class HackerWallpaperService extends WallpaperService {
 			}
 		};
 
+
 		/** Draws all of the bit sequences on the screen */
 		private void draw() {
 			if (visible) {
+				if (reset) {
+					reset = false;
+					resetSequences(sequences.size());
+				}
 				SurfaceHolder holder = getSurfaceHolder();
 				Canvas c = holder.lockCanvas();
 				try {
@@ -59,6 +70,16 @@ public class HackerWallpaperService extends WallpaperService {
 			} else {
 				stop();
 			}
+		}
+
+		private void resetSequences(int numSequences) {
+			stop();
+			sequences.clear();
+			for (int i = 0; i < numSequences; i++) {
+				sequences.add(new BitSequence(
+						(int) (i * BitSequence.getWidth() / 1.5)));
+			}
+			start();
 		}
 
 		private void stop() {
@@ -97,13 +118,7 @@ public class HackerWallpaperService extends WallpaperService {
 			int numSequences = (int) (1.5 * width / BitSequence.getWidth());
 
 			// Initialize BitSequences
-			stop();
-			sequences.clear();
-			for (int i = 0; i < numSequences; i++) {
-				sequences.add(new BitSequence(
-						(int) (i * BitSequence.getWidth() / 1.5)));
-			}
-			start();
+			resetSequences(numSequences);
 		}
 
 		@Override

@@ -123,6 +123,7 @@ public class BitSequence {
 	 */
 	public static void configure(Context context) {
 		initParameters(context);
+		HackerWallpaperService.reset();
 	}
 
 	/**
