@@ -1,5 +1,7 @@
 package com.gulshansingh.hackerlivewallpaper;
 
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
 import org.holoeverywhere.preference.PreferenceActivity;
 import org.holoeverywhere.preference.PreferenceManager;
 import org.holoeverywhere.preference.SharedPreferences;
@@ -46,5 +48,9 @@ public class SettingsActivity extends PreferenceActivity {
 			((SeekBarPreference) getPreferenceScreen().findPreference(key))
 					.refresh(this);
 		}
+		ColorPickerPreference pref = (ColorPickerPreference) findPreference("bit_color");
+		int defaultColor = getResources().getColor(R.color.green);
+		pref.onColorChanged(defaultColor);
+
 	}
 }
