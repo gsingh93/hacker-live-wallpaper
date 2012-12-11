@@ -75,6 +75,9 @@ public class BitSequence {
 	/** The initial starting point for all BitSequences */
 	private static int INITIAL_Y;
 
+	/** The color of the bit in RGB */
+	private static int color;
+
 	/** The bits this sequence stores */
 	private ArrayDeque<String> bits = new ArrayDeque<String>();
 
@@ -170,6 +173,8 @@ public class BitSequence {
 		int changeBitSpeedDivisor = preferences.getInt("change_bit_speed", 100);
 		CHANGE_BIT_SPEED = DEFAULT_CHANGE_BIT_SPEED * 100
 				/ changeBitSpeedDivisor;
+
+		color = preferences.getInt("bit_color", Color.GREEN);
 	}
 
 	/**
@@ -231,7 +236,7 @@ public class BitSequence {
 	/** Initializes the {@link Paint} object */
 	private void initPaint() {
 		paint.setTextSize(TEXT_SIZE);
-		paint.setColor(Color.GREEN);
+		paint.setColor(color);
 		setMaskFilter();
 	}
 
