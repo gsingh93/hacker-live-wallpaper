@@ -30,4 +30,10 @@
         holo:key="text_size"
         holo:title="Bit Text Size" />
 
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        holo:defaultValue="@color/green"
+        holo:key="bit_color"
+        holo:summary="Choose the bit color"
+        holo:title="Bit Color" />
+
 </PreferenceScreen>
