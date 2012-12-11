@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">Hacker Live Wallpaper</string>
-    <string name="menu_settings">Settings</string>
     <string name="hacker_wp_desc">Sequences of randomly generated bits streaming down the screen to make any hacker feel at home.</string>
+    <string name="menu_reset_to_defaults">Reset to Defaults</string>
 
 </resources>

@@ -48,6 +48,9 @@ public class BitSequence {
 																// BlurMaskFilter(1,
 																// Blur.NORMAL);
 
+	/** The default speed at which bits should be changed */
+	private static final int DEFAULT_CHANGE_BIT_SPEED = 100;
+
 	/** The maximum alpha a bit can have */
 	private static final int MAX_ALPHA = 240;
 
@@ -159,12 +162,14 @@ public class BitSequence {
 		INCREMENT = MAX_ALPHA / NUM_BITS;
 		INITIAL_Y = -1 * TEXT_SIZE * NUM_BITS;
 
-		FALLING_SPEED = 36;
-		CHANGE_BIT_SPEED = 100;
-		// FALLING_SPEED = preferences.getInt("falling_speed", context
-		// .getResources().getInteger(R.integer.default_falling_speed));
-		// CHANGE_BIT_SPEED = preferences.getInt("change_bit_speed", context
-		// .getResources().getInteger(R.integer.default_change_bit_speed));
+		int defaultFallingSpeed = TEXT_SIZE;
+
+		int fallingSpeedMultiplier = preferences.getInt("falling_speed", 100);
+		FALLING_SPEED = defaultFallingSpeed * fallingSpeedMultiplier / 100;
+
+		int changeBitSpeedDivisor = preferences.getInt("change_bit_speed", 100);
+		CHANGE_BIT_SPEED = DEFAULT_CHANGE_BIT_SPEED * 100
+				/ changeBitSpeedDivisor;
 	}
 
 	/**

@@ -9,6 +9,7 @@
         holo:defaultValue="@integer/default_num_bits"
         holo:key="num_bits"
         holo:title="Number of Bits" />
+
     <com.gulshansingh.hackerlivewallpaper.settings.PercentSeekBarPreference
         custom:mymax="200"
         custom:mymin="50"
@@ -21,6 +22,7 @@
         holo:defaultValue="100"
         holo:key="change_bit_speed"
         holo:title="Bit Change Speed" />
+
     <com.gulshansingh.hackerlivewallpaper.settings.NumberSeekBarPreference
         custom:mymax="50"
         custom:mymin="10"

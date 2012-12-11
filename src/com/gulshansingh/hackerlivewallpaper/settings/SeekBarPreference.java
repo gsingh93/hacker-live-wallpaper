@@ -23,6 +23,8 @@ public abstract class SeekBarPreference extends DialogPreference {
 
 	protected String key;
 
+	private int defaultVal;
+
 	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
@@ -31,11 +33,12 @@ public abstract class SeekBarPreference extends DialogPreference {
 
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.Preference);
-		
+
 		key = a.getString(R.styleable.Preference_key);
 		currentVal = preferences.getInt(key, -1);
+		defaultVal = a.getInteger(R.styleable.Preference_defaultValue, 0);
 		if (currentVal == -1) {
-			currentVal = a.getInteger(R.styleable.Preference_defaultValue, 0);
+			currentVal = defaultVal;
 		}
 		a.recycle();
 
@@ -63,6 +66,13 @@ public abstract class SeekBarPreference extends DialogPreference {
 				persistInt(currentVal);
 			}
 		}
+	}
+
+	public void refresh(Context context) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		currentVal = preferences.getInt(key, defaultVal);
+		setSummary(transform(currentVal));
 	}
 
 	protected abstract String transform(int value);
