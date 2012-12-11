@@ -8,71 +8,82 @@ import org.holoeverywhere.widget.SeekBar.OnSeekBarChangeListener;
 import org.holoeverywhere.widget.TextView;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.gulshansingh.hackerlivewallpaper.R;
 
-public class SeekBarPreference extends DialogPreference {
+public abstract class SeekBarPreference extends DialogPreference {
 
-	private static final String androidNS = "http://schemas.android.com/apk/res/android";
-	private static final String holoNS = "http://schemas.android.com/apk/res-auto";
+	protected int possibleVal;
+	protected int currentVal;
+	protected int maxVal;
+	protected int minVal;
 
-	private int currentVal;
-	private int maxVal;
-
-	private String key;
-
-	private Context context;
+	protected String key;
 
 	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		this.context = context;
-		key = attrs.getAttributeValue(holoNS, "key");
+
+		TypedArray a = context.obtainStyledAttributes(attrs,
+				R.styleable.Preference);
+		
+		key = a.getString(R.styleable.Preference_key);
 		currentVal = preferences.getInt(key, -1);
 		if (currentVal == -1) {
-			currentVal = attrs.getAttributeIntValue(holoNS, "defaultValue", 0);
+			currentVal = a.getInteger(R.styleable.Preference_defaultValue, 0);
 		}
-		maxVal = attrs.getAttributeIntValue(androidNS, "max", 100);
+		a.recycle();
+
+		a = context
+				.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
+		minVal = a.getInt(R.styleable.SeekBarPreference_mymin, 0);
+		maxVal = a.getInt(R.styleable.SeekBarPreference_mymax, 100);
+		maxVal -= minVal;
+		a.recycle();
 
 		setDialogLayoutResource(R.layout.preference_dialog_number_picker);
 		setPositiveButtonText(android.R.string.ok);
 		setNegativeButtonText(android.R.string.cancel);
-		setSummary(String.valueOf(currentVal));
+		setSummary(transform(currentVal));
 		setDialogIcon(null);
 	}
 
 	@Override
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
-		if (key != null) {
-			setSummary(String.valueOf(currentVal));
-			SharedPreferences.Editor editor = PreferenceManager
-					.getDefaultSharedPreferences(context).edit();
-			editor.putInt(key, currentVal);
-			editor.commit();
+		if (positiveResult) {
+			if (key != null) {
+				currentVal = possibleVal;
+				setSummary(transform(currentVal));
+				persistInt(currentVal);
+			}
 		}
 	}
+
+	protected abstract String transform(int value);
 
 	@Override
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
 
-		final TextView progressView = (TextView) view
-				.findViewById(R.id.preference_seek_bar_progress);
 		SeekBar seekBar = (SeekBar) view.findViewById(R.id.preference_seek_bar);
 		seekBar.setMax(maxVal);
-		seekBar.setProgress(currentVal);
-		progressView.setText(String.valueOf(currentVal));
+		seekBar.setProgress(currentVal - minVal);
+
+		final TextView progressView = (TextView) view
+				.findViewById(R.id.preference_seek_bar_progress);
+		progressView.setText(transform(currentVal));
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-				currentVal = progress;
-				progressView.setText(String.valueOf(progress));
+				possibleVal = progress + minVal;
+				progressView.setText(transform(possibleVal));
 			}
 
 			public void onStartTrackingTouch(SeekBar seekBar) {
