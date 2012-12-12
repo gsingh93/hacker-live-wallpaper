@@ -11,9 +11,11 @@ import android.view.SurfaceHolder;
 public class HackerWallpaperService extends WallpaperService {
 
 	private static boolean reset = false;
+	private static boolean previewReset = false;
 
 	public static void reset() {
 		reset = true;
+		previewReset = true;
 	}
 
 	@Override
@@ -38,13 +40,19 @@ public class HackerWallpaperService extends WallpaperService {
 			}
 		};
 
-
 		/** Draws all of the bit sequences on the screen */
 		private void draw() {
 			if (visible) {
-				if (reset) {
-					reset = false;
-					resetSequences(sequences.size());
+				if (isPreview()) {
+					if (previewReset) {
+						previewReset = false;
+						resetSequences(sequences.size());
+					}
+				} else {
+					if (reset) {
+						reset = false;
+						resetSequences(sequences.size());
+					}
 				}
 				SurfaceHolder holder = getSurfaceHolder();
 				Canvas c = holder.lockCanvas();
