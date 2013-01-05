@@ -127,6 +127,11 @@ public class HackerWallpaperService extends WallpaperService {
 
 			// Initialize BitSequences
 			resetSequences(numSequences);
+
+			// On initialization, reset is set and onSurfaceChanged is called,
+			// but resetSequences only needs to be called once
+			previewReset = false;
+			reset = false;
 		}
 
 		@Override
