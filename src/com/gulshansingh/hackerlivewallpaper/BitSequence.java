@@ -190,6 +190,11 @@ public class BitSequence {
 		}
 	}
 
+	public void stop() {
+		pause();
+		scheduler.shutdownNow();
+	}
+
 	/**
 	 * Unpauses the BitSequence by scheduling BitSequences on the screen to
 	 * immediately start, and scheduling BitSequences off the screen to start

@@ -76,10 +76,11 @@ public class HackerWallpaperService extends WallpaperService {
 
 				handler.post(drawRunnable);
 			} else {
-				stop();
+				pause();
 			}
 		}
 
+		// TODO: Not all of the sequences need to be cleared
 		private void resetSequences(int numSequences) {
 			stop();
 			sequences.clear();
@@ -90,7 +91,7 @@ public class HackerWallpaperService extends WallpaperService {
 			start();
 		}
 
-		private void stop() {
+		private void pause() {
 			handler.removeCallbacks(drawRunnable);
 			for (int i = 0; i < sequences.size(); i++) {
 				sequences.get(i).pause();
@@ -104,6 +105,13 @@ public class HackerWallpaperService extends WallpaperService {
 			}
 		}
 
+		private void stop() {
+			handler.removeCallbacks(drawRunnable);
+			for (int i = 0; i < sequences.size(); i++) {
+				sequences.get(i).stop();
+			}
+		}
+
 		@Override
 		public void onSurfaceCreated(SurfaceHolder holder) {
 			super.onSurfaceCreated(holder);
@@ -113,7 +121,7 @@ public class HackerWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
 			super.onSurfaceDestroyed(holder);
-			stop();
+			pause();
 		}
 
 		@Override
@@ -140,7 +148,7 @@ public class HackerWallpaperService extends WallpaperService {
 			if (visible) {
 				start();
 			} else {
-				stop();
+				pause();
 			}
 			this.visible = visible;
 		}
