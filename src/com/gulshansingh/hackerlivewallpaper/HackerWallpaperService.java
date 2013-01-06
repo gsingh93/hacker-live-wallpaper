@@ -3,6 +3,9 @@ package com.gulshansingh.hackerlivewallpaper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.holoeverywhere.preference.PreferenceManager;
+import org.holoeverywhere.preference.SharedPreferences;
+
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
@@ -12,6 +15,8 @@ public class HackerWallpaperService extends WallpaperService {
 
 	private static boolean reset = false;
 	private static boolean previewReset = false;
+
+	private int r, g, b;
 
 	public static void reset() {
 		reset = true;
@@ -58,7 +63,7 @@ public class HackerWallpaperService extends WallpaperService {
 				Canvas c = holder.lockCanvas();
 				try {
 					if (c != null) {
-						c.drawARGB(255, 0, 0, 0);
+						c.drawARGB(255, r, g, b);
 
 						for (int i = 0; i < sequences.size(); i++) {
 							sequences.get(i).draw(c);
@@ -82,6 +87,12 @@ public class HackerWallpaperService extends WallpaperService {
 
 		// TODO: Not all of the sequences need to be cleared
 		private void resetSequences(int numSequences) {
+			SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(getApplicationContext());
+			int color = preferences.getInt("background_color", 0);
+			r = (color >> 16) & 0xFF;
+			g = (color >> 8) & 0xFF;
+			b = (color >> 0) & 0xFF;
 			stop();
 			sequences.clear();
 			for (int i = 0; i < numSequences; i++) {

@@ -35,5 +35,11 @@
         holo:key="bit_color"
         holo:summary="Choose the bit color"
         holo:title="Bit Color" />
+    
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        holo:defaultValue="@color/black"
+        holo:key="background_color"
+        holo:summary="Choose the background color"
+        holo:title="Background Color" />
 
 </PreferenceScreen>

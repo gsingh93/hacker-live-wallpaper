@@ -48,9 +48,13 @@ public class SettingsActivity extends PreferenceActivity {
 			((SeekBarPreference) getPreferenceScreen().findPreference(key))
 					.refresh(this);
 		}
-		ColorPickerPreference pref = (ColorPickerPreference) findPreference("bit_color");
+		ColorPickerPreference bitPref = (ColorPickerPreference) findPreference("bit_color");
 		int defaultColor = getResources().getColor(R.color.green);
-		pref.onColorChanged(defaultColor);
+		bitPref.onColorChanged(defaultColor);
+
+		ColorPickerPreference backgroundPref = (ColorPickerPreference) findPreference("background_color");
+		defaultColor = getResources().getColor(R.color.black);
+		backgroundPref.onColorChanged(defaultColor);
 	}
 
 	@Override
