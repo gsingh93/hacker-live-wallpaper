@@ -18,12 +18,12 @@ public abstract class SeekBarPreference extends DialogPreference {
 
 	protected int possibleVal;
 	protected int currentVal;
-	protected int maxVal;
-	protected int minVal;
+	protected int maxVal = 100;
+	protected int minVal = 0;
 
 	protected String key;
 
-	private int defaultVal;
+	private int defaultVal = 0;
 
 	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -34,19 +34,39 @@ public abstract class SeekBarPreference extends DialogPreference {
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.Preference);
 
-		key = a.getString(R.styleable.Preference_key);
-		currentVal = preferences.getInt(key, -1);
-		defaultVal = a.getInteger(R.styleable.Preference_defaultValue, 0);
-		if (currentVal == -1) {
-			currentVal = defaultVal;
+		for (int i = 0; i < a.getIndexCount(); i++) {
+			int attr = a.getIndex(i);
+			switch (attr) {
+			case R.styleable.Preference_key:
+				key = a.getString(attr);
+				break;
+			case R.styleable.Preference_defaultValue:
+				defaultVal = a.getInteger(attr, defaultVal);
+				break;
+			}
 		}
-		a.recycle();
+
+		currentVal = preferences.getInt(key, defaultVal);
 
 		a = context
 				.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
-		minVal = a.getInt(R.styleable.SeekBarPreference_mymin, 0);
-		maxVal = a.getInt(R.styleable.SeekBarPreference_mymax, 100);
+
+		for (int i = 0; i < a.getIndexCount(); i++) {
+			int attr = a.getIndex(i);
+			switch (attr) {
+			case R.styleable.SeekBarPreference_mymin:
+				minVal = a.getInteger(R.styleable.SeekBarPreference_mymin,
+						minVal);
+				break;
+			case R.styleable.SeekBarPreference_mymax:
+				maxVal = a.getInteger(R.styleable.SeekBarPreference_mymax,
+						maxVal);
+				break;
+			}
+		}
+
 		maxVal -= minVal;
+
 		a.recycle();
 
 		setDialogLayoutResource(R.layout.preference_dialog_number_picker);
