@@ -95,6 +95,8 @@ public class BitSequence {
 
 	private static final String[] symbols = { "0", "1" };
 
+	private int speed = FALLING_SPEED;
+
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
 	 * its execution
@@ -102,14 +104,29 @@ public class BitSequence {
 	private final Runnable changeBitRunnable = new Runnable() {
 		public void run() {
 			changeBit();
-			y += FALLING_SPEED;
+			y += speed;
 			if (y > HEIGHT) {
 				y = INITIAL_Y;
 				scheduleThread();
-				setMaskFilter();
+				// setMaskFilter();
+				setDepth();
 			}
 		}
 	};
+
+	private void setDepth() {
+		double factor = r.nextDouble() * (1 - .8) + .8;
+		paint.setTextSize((int) (TEXT_SIZE * factor));
+		speed = (int) (FALLING_SPEED * Math.pow(factor, 4));
+
+		if (factor > .93) {
+			paint.setMaskFilter(regularFilter);
+		} else if (factor <= .93 && factor >= .87) {
+			paint.setMaskFilter(slightBlurFilter);
+		} else {
+			paint.setMaskFilter(blurFilter);
+		}
+	}
 
 	/**
 	 * Configures any BitSequences parameters requiring the application context
@@ -238,7 +255,8 @@ public class BitSequence {
 	private void initPaint() {
 		paint.setTextSize(TEXT_SIZE);
 		paint.setColor(color);
-		setMaskFilter();
+		// setMaskFilter();
+		setDepth();
 	}
 
 	private void setMaskFilter() {
