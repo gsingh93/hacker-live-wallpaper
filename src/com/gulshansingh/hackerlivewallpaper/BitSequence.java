@@ -96,7 +96,7 @@ public class BitSequence {
 	/** True when the BitSequence should be paused */
 	private boolean pause = false;
 
-	private final ScheduledExecutorService scheduler = Executors
+	private static final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
 
 	/**
@@ -192,7 +192,6 @@ public class BitSequence {
 
 	public void stop() {
 		pause();
-		scheduler.shutdownNow();
 	}
 
 	/**
