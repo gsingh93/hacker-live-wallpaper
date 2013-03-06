@@ -16,8 +16,11 @@ import com.gulshansingh.hackerlivewallpaper.R;
 
 public abstract class SeekBarPreference extends DialogPreference {
 
-	protected int possibleVal;
 	protected int currentVal;
+
+	/** The value the preference could possibly be once the user presses ok */
+	protected int possibleVal;
+
 	protected int maxVal = 100;
 	protected int minVal = 0;
 
@@ -47,6 +50,7 @@ public abstract class SeekBarPreference extends DialogPreference {
 		}
 
 		currentVal = preferences.getInt(key, defaultVal);
+		possibleVal = currentVal;
 
 		a = context
 				.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
@@ -65,6 +69,8 @@ public abstract class SeekBarPreference extends DialogPreference {
 			}
 		}
 
+		// The seek bar must start at 0, so we have to scale max downward
+		// and account for this later on
 		maxVal -= minVal;
 
 		a.recycle();
