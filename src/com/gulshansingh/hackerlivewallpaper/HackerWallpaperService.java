@@ -36,6 +36,8 @@ public class HackerWallpaperService extends WallpaperService {
 		/** The sequences to draw on the screen */
 		private List<BitSequence> sequences = new ArrayList<BitSequence>();
 
+		private int width;
+
 		/**
 		 * The main runnable that is given to the Handler to draw the animation
 		 */
@@ -51,12 +53,12 @@ public class HackerWallpaperService extends WallpaperService {
 				if (isPreview()) {
 					if (previewReset) {
 						previewReset = false;
-						resetSequences(sequences.size());
+						resetSequences();
 					}
 				} else {
 					if (reset) {
 						reset = false;
-						resetSequences(sequences.size());
+						resetSequences();
 					}
 				}
 				SurfaceHolder holder = getSurfaceHolder();
@@ -86,7 +88,7 @@ public class HackerWallpaperService extends WallpaperService {
 		}
 
 		// TODO: Not all of the sequences need to be cleared
-		private void resetSequences(int numSequences) {
+		private void resetSequences() {
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getApplicationContext());
 			int color = preferences.getInt("background_color", 0);
@@ -95,6 +97,7 @@ public class HackerWallpaperService extends WallpaperService {
 			b = (color >> 0) & 0xFF;
 			stop();
 			sequences.clear();
+			int numSequences = (int) (1.5 * width / BitSequence.getWidth());
 			for (int i = 0; i < numSequences; i++) {
 				sequences.add(new BitSequence(
 						(int) (i * BitSequence.getWidth() / 1.5)));
@@ -139,13 +142,12 @@ public class HackerWallpaperService extends WallpaperService {
 		public void onSurfaceChanged(SurfaceHolder holder, int format,
 				int width, int height) {
 			super.onSurfaceChanged(holder, format, width, height);
+			this.width = width;
 
 			BitSequence.configure(width, height);
 
-			int numSequences = (int) (1.5 * width / BitSequence.getWidth());
-
 			// Initialize BitSequences
-			resetSequences(numSequences);
+			resetSequences();
 
 			// On initialization, reset is set and onSurfaceChanged is called,
 			// but resetSequences only needs to be called once
