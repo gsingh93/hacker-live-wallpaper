@@ -29,12 +29,6 @@ import com.gulshansingh.hackerlivewallpaper.thirdparty.ArrayDeque;
  */
 public class BitSequence {
 
-	/** This string is stored so it does not need to be created multiple times */
-	private static final String zero = "0";
-
-	/** This string is stored so it does not need to be created multiple times */
-	private static final String one = "1";
-
 	/** The Mask to use for blurred text */
 	private static final BlurMaskFilter blurFilter = new BlurMaskFilter(3,
 			Blur.NORMAL);
@@ -98,6 +92,8 @@ public class BitSequence {
 
 	private static final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
+
+	private static final String[] symbols = { "0", "1" };
 
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
@@ -264,12 +260,7 @@ public class BitSequence {
 	 * @return A new random bit as a {@link String}
 	 */
 	private String getRandomBit(Random r) {
-		int bit = r.nextInt(2);
-		if (bit == 0) {
-			return zero;
-		} else {
-			return one;
-		}
+		return symbols[r.nextInt(symbols.length)];
 	}
 
 	/**
