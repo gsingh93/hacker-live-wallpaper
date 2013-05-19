@@ -1,3 +1,6 @@
 [submodule "contrib/ColorPickerPreference"]
 	path = contrib/ColorPickerPreference
 	url = git@github.com:gsingh93/android-ColorPickerPreference.git
+[submodule "contrib/HoloEverywhere"]
+	path = contrib/HoloEverywhere
+	url = git://github.com/Prototik/HoloEverywhere.git
