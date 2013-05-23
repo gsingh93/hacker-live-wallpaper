@@ -40,12 +40,6 @@ public class BitSequence {
 	/** The Mask to use for regular text */
 	private static final BlurMaskFilter regularFilter = null;
 
-	/** The default speed at which bits should be changed */
-	private static final int DEFAULT_CHANGE_BIT_SPEED = 100;
-
-	/** The maximum alpha a bit can have */
-	private static final int MAX_ALPHA = 240;
-
 	/** The height of the screen */
 	private static int HEIGHT;
 
@@ -74,6 +68,12 @@ public class BitSequence {
 	private final Style style = new Style();
 
 	public static class Style {
+		/** The default speed at which bits should be changed */
+		private static final int DEFAULT_CHANGE_BIT_SPEED = 100;
+
+		/** The maximum alpha a bit can have */
+		private static final int MAX_ALPHA = 240;
+
 		private static int changeBitSpeed;
 		private static int numBits;
 		private static int color;
@@ -87,7 +87,7 @@ public class BitSequence {
 		private int fallingSpeed;
 		private BlurMaskFilter maskFilter;
 
-		private Paint paint = null;
+		private Paint paint = new Paint();
 
 		public static void initParameters(Context context) {
 			PreferenceUtility preferences = new PreferenceUtility(context);
@@ -110,18 +110,13 @@ public class BitSequence {
 			initialY = -1 * defaultTextSize * numBits;
 		}
 
+		public Style() {
+			paint.setColor(color);
+		}
+
 		public void createPaint() {
 			paint.setTextSize(textSize);
 			paint.setMaskFilter(maskFilter);
-			paint.setAlpha(alphaIncrement);
-		}
-
-		public Paint getPaint() {
-			if (paint == null) {
-				paint = new Paint();
-				paint.setColor(color);
-			}
-			return paint;
 		}
 
 		private static class PreferenceUtility {
@@ -311,13 +306,14 @@ public class BitSequence {
 	 *            the {@link Canvas} on which to draw the BitSequence
 	 */
 	synchronized public void draw(Canvas canvas) {
-		Paint paint = style.getPaint();
-		float prevY = y;
+		// TODO Can the get and set alphas be optimized?
+		Paint paint = style.paint;
+		float bitY = y;
+		paint.setAlpha(Style.alphaIncrement);
 		for (int i = 0; i < bits.size(); i++) {
-			canvas.drawText(bits.get(i), x, y, paint);
-			y += style.textSize;
+			canvas.drawText(bits.get(i), x, bitY, paint);
+			bitY += style.textSize;
 			paint.setAlpha(paint.getAlpha() + Style.alphaIncrement);
 		}
-		y = prevY;
 	}
 }
