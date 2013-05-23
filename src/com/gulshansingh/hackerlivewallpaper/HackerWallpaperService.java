@@ -57,10 +57,10 @@ public class HackerWallpaperService extends WallpaperService {
 				// reset
 				if (previewReset && isPreview()) {
 					previewReset = false;
-					resetSequences();
+					resetSequences(true);
 				} else if (reset && !isPreview()) {
 					reset = false;
-					resetSequences();
+					resetSequences(true);
 				}
 				SurfaceHolder holder = getSurfaceHolder();
 				Canvas c = holder.lockCanvas();
@@ -89,7 +89,7 @@ public class HackerWallpaperService extends WallpaperService {
 		}
 
 		// TODO: Not all of the sequences need to be cleared
-		private void resetSequences() {
+		private void resetSequences(boolean clearAll) {
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getApplicationContext());
 			int color = preferences.getInt(KEY_BACKGROUND_COLOR, 0);
@@ -97,9 +97,19 @@ public class HackerWallpaperService extends WallpaperService {
 			g = (color >> 8) & 0xFF;
 			b = (color >> 0) & 0xFF;
 			stop();
-			sequences.clear();
 			int numSequences = (int) (1.5 * width / BitSequence.getWidth());
-			for (int i = 0; i < numSequences; i++) {
+
+			int start = 0;
+			if (clearAll) {
+				sequences.clear();
+			} else {
+				int size = sequences.size();
+				if (size > numSequences) {
+					sequences.subList(numSequences, size).clear();
+				}
+				start = size;
+			}
+			for (int i = start; i < numSequences; i++) {
 				sequences.add(new BitSequence(
 						(int) (i * BitSequence.getWidth() / 1.5)));
 			}
@@ -148,7 +158,7 @@ public class HackerWallpaperService extends WallpaperService {
 			BitSequence.setScreenDim(width, height);
 
 			// Initialize BitSequences
-			resetSequences();
+			resetSequences(false);
 		}
 
 		@Override
