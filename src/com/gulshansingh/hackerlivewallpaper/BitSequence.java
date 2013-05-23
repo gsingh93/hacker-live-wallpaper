@@ -10,10 +10,10 @@ import org.holoeverywhere.preference.PreferenceManager;
 import org.holoeverywhere.preference.SharedPreferences;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.gulshansingh.hackerlivewallpaper.thirdparty.ArrayDeque;
@@ -38,9 +38,7 @@ public class BitSequence {
 			2, Blur.NORMAL);
 
 	/** The Mask to use for regular text */
-	private static final BlurMaskFilter regularFilter = null;// new
-																// BlurMaskFilter(1,
-																// Blur.NORMAL);
+	private static final BlurMaskFilter regularFilter = null;
 
 	/** The default speed at which bits should be changed */
 	private static final int DEFAULT_CHANGE_BIT_SPEED = 100;
@@ -48,29 +46,8 @@ public class BitSequence {
 	/** The maximum alpha a bit can have */
 	private static final int MAX_ALPHA = 240;
 
-	/** The font size for the bits */
-	private static int TEXT_SIZE;
-
-	/** The speed at which bits should be changed */
-	private static int CHANGE_BIT_SPEED;
-
-	/** The speed at which to move down the screen */
-	private static int FALLING_SPEED = TEXT_SIZE;
-
 	/** The height of the screen */
 	private static int HEIGHT;
-
-	/** The number of bits this bit sequence should hold */
-	private static int NUM_BITS;
-
-	/** The increment at which the alpha of the bit sequence should increase */
-	private static int INCREMENT;
-
-	/** The initial starting point for all BitSequences */
-	private static int INITIAL_Y;
-
-	/** The color of the bit in RGB */
-	private static int color;
 
 	/** The bits this sequence stores */
 	private ArrayDeque<String> bits = new ArrayDeque<String>();
@@ -84,18 +61,95 @@ public class BitSequence {
 	/** The position to draw the sequence at on the screen */
 	float x, y;
 
-	/** The paint style for the bits */
-	private Paint paint = new Paint();
-
 	/** True when the BitSequence should be paused */
 	private boolean pause = false;
 
 	private static final ScheduledExecutorService scheduler = Executors
 			.newSingleThreadScheduledExecutor();
 
+	/** The characters to use in the sequence */
 	private static final String[] symbols = { "0", "1" };
 
-	private int speed = FALLING_SPEED;
+	/** Describes the style of the sequence */
+	private final Style style = new Style();
+
+	public static class Style {
+		private static int changeBitSpeed;
+		private static int numBits;
+		private static int color;
+		private static int defaultTextSize;
+		private static int defaultFallingSpeed;
+
+		private static int alphaIncrement;
+		private static int initialY;
+
+		private int textSize;
+		private int fallingSpeed;
+		private BlurMaskFilter maskFilter;
+
+		private Paint paint = null;
+
+		public static void initParameters(Context context) {
+			PreferenceUtility preferences = new PreferenceUtility(context);
+
+			numBits = preferences
+					.getInt("num_bits", R.integer.default_num_bits);
+			color = preferences.getInt("bit_color", R.color.default_bit_color);
+			defaultTextSize = preferences.getInt("text_size",
+					R.integer.default_text_size);
+
+			double changeBitSpeedMultiplier = 100 / preferences.getInt(
+					"change_bit_speed", R.integer.default_change_bit_speed);
+			double fallingSpeedMultiplier = preferences.getInt("falling_speed",
+					R.integer.default_falling_speed) / 100;
+
+			changeBitSpeed = (int) (DEFAULT_CHANGE_BIT_SPEED * changeBitSpeedMultiplier);
+			defaultFallingSpeed = (int) (defaultTextSize * fallingSpeedMultiplier);
+
+			alphaIncrement = MAX_ALPHA / numBits;
+			initialY = -1 * defaultTextSize * numBits;
+		}
+
+		public void createPaint() {
+			paint.setTextSize(textSize);
+			paint.setMaskFilter(maskFilter);
+			paint.setAlpha(alphaIncrement);
+		}
+
+		public Paint getPaint() {
+			if (paint == null) {
+				paint = new Paint();
+				paint.setColor(color);
+			}
+			return paint;
+		}
+
+		private static class PreferenceUtility {
+			private SharedPreferences preferences;
+			private Resources res;
+
+			public PreferenceUtility(Context context) {
+				preferences = PreferenceManager
+						.getDefaultSharedPreferences(context);
+				res = context.getResources();
+			}
+
+			public int getInt(String key, int defaultId) {
+				return preferences.getInt(key, res.getInteger(defaultId));
+			}
+		}
+	}
+
+	/**
+	 * Resets the sequence by repositioning it, reseting its visual
+	 * characteristics, and rescheduling the thread
+	 */
+	private void reset() {
+		y = Style.initialY;
+		setDepth();
+		style.createPaint();
+		scheduleThread();
+	}
 
 	/**
 	 * A runnable that changes the bit, moves the sequence down, and reschedules
@@ -104,27 +158,25 @@ public class BitSequence {
 	private final Runnable changeBitRunnable = new Runnable() {
 		public void run() {
 			changeBit();
-			y += speed;
+			y += style.fallingSpeed;
 			if (y > HEIGHT) {
-				y = INITIAL_Y;
-				scheduleThread();
-				// setMaskFilter();
-				setDepth();
+				reset();
 			}
 		}
 	};
 
 	private void setDepth() {
 		double factor = r.nextDouble() * (1 - .8) + .8;
-		paint.setTextSize((int) (TEXT_SIZE * factor));
-		speed = (int) (FALLING_SPEED * Math.pow(factor, 4));
+		style.textSize = (int) (Style.defaultTextSize * factor);
+		style.fallingSpeed = (int) (Style.defaultFallingSpeed * Math.pow(
+				factor, 4));
 
 		if (factor > .93) {
-			paint.setMaskFilter(regularFilter);
+			style.maskFilter = regularFilter;
 		} else if (factor <= .93 && factor >= .87) {
-			paint.setMaskFilter(slightBlurFilter);
+			style.maskFilter = slightBlurFilter;
 		} else {
-			paint.setMaskFilter(blurFilter);
+			style.maskFilter = blurFilter;
 		}
 	}
 
@@ -152,15 +204,12 @@ public class BitSequence {
 	}
 
 	public BitSequence(int x) {
-		for (int i = 0; i < NUM_BITS; i++) {
+		for (int i = 0; i < Style.numBits; i++) {
 			bits.add(getRandomBit(r));
 		}
 
 		this.x = x;
-		this.y = INITIAL_Y;
-		initPaint();
-
-		scheduleThread();
+		reset();
 	}
 
 	/**
@@ -170,25 +219,7 @@ public class BitSequence {
 	 *            the application context used to access preferences
 	 */
 	private static void initParameters(Context context) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		TEXT_SIZE = preferences.getInt("text_size", context.getResources()
-				.getInteger(R.integer.default_text_size));
-		NUM_BITS = preferences.getInt("num_bits", context.getResources()
-				.getInteger(R.integer.default_num_bits));
-		INCREMENT = MAX_ALPHA / NUM_BITS;
-		INITIAL_Y = -1 * TEXT_SIZE * NUM_BITS;
-
-		int defaultFallingSpeed = TEXT_SIZE;
-
-		int fallingSpeedMultiplier = preferences.getInt("falling_speed", 100);
-		FALLING_SPEED = defaultFallingSpeed * fallingSpeedMultiplier / 100;
-
-		int changeBitSpeedDivisor = preferences.getInt("change_bit_speed", 100);
-		CHANGE_BIT_SPEED = DEFAULT_CHANGE_BIT_SPEED * 100
-				/ changeBitSpeedDivisor;
-
-		color = preferences.getInt("bit_color", Color.GREEN);
+		Style.initParameters(context);
 	}
 
 	/**
@@ -214,7 +245,7 @@ public class BitSequence {
 	 */
 	public void unpause() {
 		if (pause) {
-			if (y <= INITIAL_Y + TEXT_SIZE || y > HEIGHT) {
+			if (y <= Style.initialY + style.textSize || y > HEIGHT) {
 				scheduleThread();
 			} else {
 				scheduleThread(0);
@@ -242,32 +273,13 @@ public class BitSequence {
 		if (future != null)
 			future.cancel(true);
 		future = scheduler.scheduleAtFixedRate(changeBitRunnable, delay,
-				CHANGE_BIT_SPEED, TimeUnit.MILLISECONDS);
+				Style.changeBitSpeed, TimeUnit.MILLISECONDS);
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */
 	synchronized private void changeBit() {
 		bits.removeFirst();
 		bits.addLast(getRandomBit(r));
-	}
-
-	/** Initializes the {@link Paint} object */
-	private void initPaint() {
-		paint.setTextSize(TEXT_SIZE);
-		paint.setColor(color);
-		// setMaskFilter();
-		setDepth();
-	}
-
-	private void setMaskFilter() {
-		int blur = r.nextInt(4);
-		if (blur == 0) {
-			paint.setMaskFilter(blurFilter);
-		} else if (blur == 1) {
-			paint.setMaskFilter(slightBlurFilter);
-		} else {
-			paint.setMaskFilter(regularFilter);
-		}
 	}
 
 	/**
@@ -288,7 +300,7 @@ public class BitSequence {
 	 */
 	public static float getWidth() {
 		Paint paint = new Paint();
-		paint.setTextSize(TEXT_SIZE);
+		paint.setTextSize(Style.defaultTextSize);
 		return paint.measureText("0");
 	}
 
@@ -299,12 +311,12 @@ public class BitSequence {
 	 *            the {@link Canvas} on which to draw the BitSequence
 	 */
 	synchronized public void draw(Canvas canvas) {
-		paint.setAlpha(INCREMENT);
+		Paint paint = style.getPaint();
 		float prevY = y;
 		for (int i = 0; i < bits.size(); i++) {
 			canvas.drawText(bits.get(i), x, y, paint);
-			y += TEXT_SIZE;
-			paint.setAlpha(paint.getAlpha() + INCREMENT);
+			y += style.textSize;
+			paint.setAlpha(paint.getAlpha() + Style.alphaIncrement);
 		}
 		y = prevY;
 	}

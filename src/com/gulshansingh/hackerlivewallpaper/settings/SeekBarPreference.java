@@ -13,8 +13,10 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.gulshansingh.hackerlivewallpaper.R;
+import com.gulshansingh.hackerlivewallpaper.Refreshable;
 
-public abstract class SeekBarPreference extends DialogPreference {
+public abstract class SeekBarPreference extends DialogPreference implements
+		Refreshable {
 
 	protected int currentVal;
 
@@ -48,6 +50,7 @@ public abstract class SeekBarPreference extends DialogPreference {
 				break;
 			}
 		}
+		a.recycle();
 
 		currentVal = preferences.getInt(key, defaultVal);
 		possibleVal = currentVal;
@@ -68,12 +71,11 @@ public abstract class SeekBarPreference extends DialogPreference {
 				break;
 			}
 		}
+		a.recycle();
 
 		// The seek bar must start at 0, so we have to scale max downward
 		// and account for this later on
 		maxVal -= minVal;
-
-		a.recycle();
 
 		setDialogLayoutResource(R.layout.preference_dialog_number_picker);
 		setPositiveButtonText(android.R.string.ok);
@@ -94,6 +96,7 @@ public abstract class SeekBarPreference extends DialogPreference {
 		}
 	}
 
+	@Override
 	public void refresh(Context context) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);

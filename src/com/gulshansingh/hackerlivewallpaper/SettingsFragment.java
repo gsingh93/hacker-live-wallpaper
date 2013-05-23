@@ -1,5 +1,8 @@
 package com.gulshansingh.hackerlivewallpaper;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 import org.holoeverywhere.preference.PreferenceFragment;
@@ -11,9 +14,20 @@ import android.os.Bundle;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.gulshansingh.hackerlivewallpaper.settings.SeekBarPreference;
 
 public class SettingsFragment extends PreferenceFragment {
+
+	private static final String KEY_TEXT_SIZE = "text_size";
+	private static final String KEY_CHANGE_BIT_SPEED = "change_bit_speed";
+	private static final String KEY_FALLING_SPEED = "falling_speed";
+	private static final String KEY_NUM_BITS = "num_bits";
+	private static final String KEY_BACKGROUND_COLOR = "background_color";
+	private static final String KEY_BIT_COLOR = "bit_color";
+
+	/** Keys for preferences that should be refreshed */
+	private static final List<String> mRefreshKeys = Arrays.asList(KEY_NUM_BITS,
+			KEY_FALLING_SPEED, KEY_CHANGE_BIT_SPEED, KEY_TEXT_SIZE);
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,11 +43,7 @@ public class SettingsFragment extends PreferenceFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.menu_reset_to_defaults) {
-			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(getActivity());
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.clear();
-			editor.commit();
+			resetToDefaults();
 			refreshPreferences();
 		} else {
 			return super.onOptionsItemSelected(item);
@@ -41,19 +51,27 @@ public class SettingsFragment extends PreferenceFragment {
 		return true;
 	}
 
+	private void resetToDefaults() {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.clear();
+		editor.commit();
+		PreferenceManager.setDefaultValues(getActivity(), R.xml.prefs, true);
+	}
+
 	private void refreshPreferences() {
-		String[] keys = { "num_bits", "falling_speed", "change_bit_speed",
-				"text_size" };
-		for (String key : keys) {
-			((SeekBarPreference) getPreferenceScreen().findPreference(key))
+		for (String key : mRefreshKeys) {
+			((Refreshable) getPreferenceScreen().findPreference(key))
 					.refresh(getActivity());
 		}
-		ColorPickerPreference bitPref = (ColorPickerPreference) findPreference("bit_color");
-		int defaultColor = getResources().getColor(R.color.green);
+		ColorPickerPreference bitPref = (ColorPickerPreference) findPreference(KEY_BIT_COLOR);
+		int defaultColor = getResources().getColor(R.color.default_bit_color);
 		bitPref.onColorChanged(defaultColor);
 
-		ColorPickerPreference backgroundPref = (ColorPickerPreference) findPreference("background_color");
-		defaultColor = getResources().getColor(R.color.black);
+		ColorPickerPreference backgroundPref = (ColorPickerPreference) findPreference(KEY_BACKGROUND_COLOR);
+		defaultColor = getResources()
+				.getColor(R.color.default_background_color);
 		backgroundPref.onColorChanged(defaultColor);
 	}
 
