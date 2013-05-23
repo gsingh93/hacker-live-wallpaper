@@ -1,5 +1,11 @@
 package com.gulshansingh.hackerlivewallpaper;
 
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_BIT_COLOR;
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_CHANGE_BIT_SPEED;
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_FALLING_SPEED;
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_NUM_BITS;
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_TEXT_SIZE;
+
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -92,16 +98,17 @@ public class BitSequence {
 		public static void initParameters(Context context) {
 			PreferenceUtility preferences = new PreferenceUtility(context);
 
-			numBits = preferences
-					.getInt("num_bits", R.integer.default_num_bits);
-			color = preferences.getInt("bit_color", R.color.default_bit_color);
-			defaultTextSize = preferences.getInt("text_size",
+			numBits = preferences.getInt(KEY_NUM_BITS,
+					R.integer.default_num_bits);
+			color = preferences
+					.getInt(KEY_BIT_COLOR, R.color.default_bit_color);
+			defaultTextSize = preferences.getInt(KEY_TEXT_SIZE,
 					R.integer.default_text_size);
 
 			double changeBitSpeedMultiplier = 100 / preferences.getInt(
-					"change_bit_speed", R.integer.default_change_bit_speed);
-			double fallingSpeedMultiplier = preferences.getInt("falling_speed",
-					R.integer.default_falling_speed) / 100;
+					KEY_CHANGE_BIT_SPEED, R.integer.default_change_bit_speed);
+			double fallingSpeedMultiplier = preferences.getInt(
+					KEY_FALLING_SPEED, R.integer.default_falling_speed) / 100;
 
 			changeBitSpeed = (int) (DEFAULT_CHANGE_BIT_SPEED * changeBitSpeedMultiplier);
 			defaultFallingSpeed = (int) (defaultTextSize * fallingSpeedMultiplier);

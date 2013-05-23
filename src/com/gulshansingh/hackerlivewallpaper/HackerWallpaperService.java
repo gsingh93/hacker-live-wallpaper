@@ -1,5 +1,7 @@
 package com.gulshansingh.hackerlivewallpaper;
 
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_BACKGROUND_COLOR;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +93,7 @@ public class HackerWallpaperService extends WallpaperService {
 		private void resetSequences() {
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getApplicationContext());
-			int color = preferences.getInt("background_color", 0);
+			int color = preferences.getInt(KEY_BACKGROUND_COLOR, 0);
 			r = (color >> 16) & 0xFF;
 			g = (color >> 8) & 0xFF;
 			b = (color >> 0) & 0xFF;

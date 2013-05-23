@@ -17,12 +17,13 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class SettingsFragment extends PreferenceFragment {
 
-	private static final String KEY_TEXT_SIZE = "text_size";
-	private static final String KEY_CHANGE_BIT_SPEED = "change_bit_speed";
-	private static final String KEY_FALLING_SPEED = "falling_speed";
-	private static final String KEY_NUM_BITS = "num_bits";
-	private static final String KEY_BACKGROUND_COLOR = "background_color";
-	private static final String KEY_BIT_COLOR = "bit_color";
+	public static final String KEY_BACKGROUND_COLOR = "background_color";
+
+	public static final String KEY_TEXT_SIZE = "text_size";
+	public static final String KEY_CHANGE_BIT_SPEED = "change_bit_speed";
+	public static final String KEY_FALLING_SPEED = "falling_speed";
+	public static final String KEY_NUM_BITS = "num_bits";
+	public static final String KEY_BIT_COLOR = "bit_color";
 
 	/** Keys for preferences that should be refreshed */
 	private static final List<String> mRefreshKeys = Arrays.asList(KEY_NUM_BITS,
