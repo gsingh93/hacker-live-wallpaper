@@ -189,8 +189,7 @@ public class BitSequence {
 	 *            the application context
 	 */
 	public static void configure(Context context) {
-		initParameters(context);
-		HackerWallpaperService.reset();
+		Style.initParameters(context);
 	}
 
 	/**
@@ -201,7 +200,7 @@ public class BitSequence {
 	 * @param height
 	 *            the height of the screen
 	 */
-	public static void configure(int width, int height) {
+	public static void setScreenDim(int width, int height) {
 		HEIGHT = height;
 	}
 
@@ -212,16 +211,6 @@ public class BitSequence {
 
 		this.x = x;
 		reset();
-	}
-
-	/**
-	 * Configures the BitSequence parameters
-	 * 
-	 * @param context
-	 *            the application context used to access preferences
-	 */
-	private static void initParameters(Context context) {
-		Style.initParameters(context);
 	}
 
 	/**

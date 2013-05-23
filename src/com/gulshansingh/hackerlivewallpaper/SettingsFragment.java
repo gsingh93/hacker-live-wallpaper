@@ -80,5 +80,6 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onDestroy() {
 		super.onDestroy();
 		BitSequence.configure(getActivity());
+		HackerWallpaperService.reset();
 	}
 }

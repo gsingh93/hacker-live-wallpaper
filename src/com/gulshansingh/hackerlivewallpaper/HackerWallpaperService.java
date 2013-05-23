@@ -21,8 +21,8 @@ public class HackerWallpaperService extends WallpaperService {
 	private int r, g, b;
 
 	public static void reset() {
-		reset = true;
 		previewReset = true;
+		reset = true;
 	}
 
 	@Override
@@ -52,16 +52,15 @@ public class HackerWallpaperService extends WallpaperService {
 		/** Draws all of the bit sequences on the screen */
 		private void draw() {
 			if (visible) {
-				if (isPreview()) {
-					if (previewReset) {
-						previewReset = false;
-						resetSequences();
-					}
-				} else {
-					if (reset) {
-						reset = false;
-						resetSequences();
-					}
+				// We can't have just one reset flag, because then the preview
+				// would consume that flag and the actual wallpaper wouldn't be
+				// reset
+				if (previewReset && isPreview()) {
+					previewReset = false;
+					resetSequences();
+				} else if (reset && !isPreview()) {
+					reset = false;
+					resetSequences();
 				}
 				SurfaceHolder holder = getSurfaceHolder();
 				Canvas c = holder.lockCanvas();
@@ -146,15 +145,10 @@ public class HackerWallpaperService extends WallpaperService {
 			super.onSurfaceChanged(holder, format, width, height);
 			this.width = width;
 
-			BitSequence.configure(width, height);
+			BitSequence.setScreenDim(width, height);
 
 			// Initialize BitSequences
 			resetSequences();
-
-			// On initialization, reset is set and onSurfaceChanged is called,
-			// but resetSequences only needs to be called once
-			previewReset = false;
-			reset = false;
 		}
 
 		@Override
