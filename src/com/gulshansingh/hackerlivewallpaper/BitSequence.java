@@ -56,8 +56,11 @@ public class BitSequence {
 	/** A variable used for all operations needing random numbers */
 	private Random r = new Random();
 
-	/** The scheduled operation for changing a bit and shifting downwards */
-	private ScheduledFuture<?> future;
+	/** The scheduled operation for changing a bit */
+	private ScheduledFuture<?> changeBitfuture;
+
+	/** The scheduled operation for shifting downwards */
+	private ScheduledFuture<?> fallingFuture;
 
 	/** The position to draw the sequence at on the screen */
 	float x, y;
@@ -166,14 +169,20 @@ public class BitSequence {
 		scheduleThread();
 	}
 
-	/**
-	 * A runnable that changes the bit, moves the sequence down, and reschedules
-	 * its execution
-	 */
+	/** A runnable that changes the bit */
 	private final Runnable changeBitRunnable = new Runnable() {
 		public void run() {
 			changeBit();
-			y += style.fallingSpeed;
+		}
+	};
+
+	/**
+	 * A runnable that moves the sequences down and resets it after going passed
+	 * the edge of the screen
+	 */
+	private final Runnable fallingRunnable = new Runnable() {
+		public void run() {
+			y += style.fallingSpeed / 10;
 			if (y > HEIGHT) {
 				reset();
 			}
@@ -236,8 +245,11 @@ public class BitSequence {
 	 */
 	public void pause() {
 		if (!pause) {
-			if (future != null) {
-				future.cancel(true);
+			if (changeBitfuture != null) {
+				changeBitfuture.cancel(true);
+			}
+			if (fallingFuture != null) {
+				fallingFuture.cancel(true);
 			}
 			pause = true;
 		}
@@ -279,10 +291,14 @@ public class BitSequence {
 	 *            the delay in milliseconds
 	 */
 	private void scheduleThread(int delay) {
-		if (future != null)
-			future.cancel(true);
-		future = scheduler.scheduleAtFixedRate(changeBitRunnable, delay,
-				Style.changeBitSpeed, TimeUnit.MILLISECONDS);
+		if (changeBitfuture != null)
+			changeBitfuture.cancel(true);
+		if (fallingFuture != null)
+			fallingFuture.cancel(true);
+		changeBitfuture = scheduler.scheduleAtFixedRate(changeBitRunnable,
+				delay, Style.changeBitSpeed, TimeUnit.MILLISECONDS);
+		fallingFuture = scheduler.scheduleAtFixedRate(fallingRunnable, delay,
+				Style.changeBitSpeed / 10, TimeUnit.MILLISECONDS);
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */
