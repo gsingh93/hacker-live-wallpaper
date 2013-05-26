@@ -46,5 +46,10 @@
         holo:key="enable_depth"
         holo:summary="Make some sequences appear to be behind others"
         holo:title="Enable Depth" />
+    <CheckBoxPreference
+        holo:defaultValue="false"
+        holo:key="enable_smooth_falling"
+        holo:summary="Make falling seem less jumpy"
+        holo:title="Smooth Falling" />
 
 </PreferenceScreen>

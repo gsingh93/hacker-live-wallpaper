@@ -19,6 +19,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class SettingsFragment extends PreferenceFragment {
 
 	public static final String KEY_BACKGROUND_COLOR = "background_color";
+	public static final String KEY_ENABLE_SMOOTH_FALLING = "enable_smooth_falling";
 	public static final String KEY_ENABLE_DEPTH = "enable_depth";
 	public static final String KEY_TEXT_SIZE = "text_size";
 	public static final String KEY_CHANGE_BIT_SPEED = "change_bit_speed";
@@ -79,6 +80,9 @@ public class SettingsFragment extends PreferenceFragment {
 
 		CheckBoxPreference depthEnabledPref = (CheckBoxPreference) findPreference(KEY_ENABLE_DEPTH);
 		depthEnabledPref.setChecked(true);
+
+		CheckBoxPreference smoothFallingEnabledPref = (CheckBoxPreference) findPreference(KEY_ENABLE_SMOOTH_FALLING);
+		smoothFallingEnabledPref.setChecked(false);
 	}
 
 	@Override

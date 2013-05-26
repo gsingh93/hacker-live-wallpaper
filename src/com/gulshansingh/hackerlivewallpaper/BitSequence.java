@@ -3,6 +3,7 @@ package com.gulshansingh.hackerlivewallpaper;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_BIT_COLOR;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_CHANGE_BIT_SPEED;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_ENABLE_DEPTH;
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_ENABLE_SMOOTH_FALLING;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_FALLING_SPEED;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_NUM_BITS;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_TEXT_SIZE;
@@ -89,6 +90,7 @@ public class BitSequence {
 		private static int color;
 		private static int defaultTextSize;
 		private static int defaultFallingSpeed;
+		private static int smoothFallingDivisor;
 		private static boolean depthEnabled;
 
 		private static int alphaIncrement;
@@ -117,6 +119,10 @@ public class BitSequence {
 
 			changeBitSpeed = (int) (DEFAULT_CHANGE_BIT_SPEED * changeBitSpeedMultiplier);
 			defaultFallingSpeed = (int) (defaultTextSize * fallingSpeedMultiplier);
+
+			boolean smoothFalling = preferences.getBoolean(
+					KEY_ENABLE_SMOOTH_FALLING, false);
+			smoothFallingDivisor = smoothFalling ? 10 : 1;
 
 			depthEnabled = preferences.getBoolean(KEY_ENABLE_DEPTH, true);
 
@@ -182,7 +188,7 @@ public class BitSequence {
 	 */
 	private final Runnable fallingRunnable = new Runnable() {
 		public void run() {
-			y += style.fallingSpeed / 10;
+			y += style.fallingSpeed / Style.smoothFallingDivisor;
 			if (y > HEIGHT) {
 				reset();
 			}
@@ -298,7 +304,8 @@ public class BitSequence {
 		changeBitfuture = scheduler.scheduleAtFixedRate(changeBitRunnable,
 				delay, Style.changeBitSpeed, TimeUnit.MILLISECONDS);
 		fallingFuture = scheduler.scheduleAtFixedRate(fallingRunnable, delay,
-				Style.changeBitSpeed / 10, TimeUnit.MILLISECONDS);
+				Style.changeBitSpeed / Style.smoothFallingDivisor,
+				TimeUnit.MILLISECONDS);
 	}
 
 	/** Shifts the bits back by one and adds a new bit to the end */
@@ -336,7 +343,6 @@ public class BitSequence {
 	 *            the {@link Canvas} on which to draw the BitSequence
 	 */
 	synchronized public void draw(Canvas canvas) {
-		// TODO Can the get and set alphas be optimized?
 		Paint paint = style.paint;
 		float bitY = y;
 		paint.setAlpha(Style.alphaIncrement);
