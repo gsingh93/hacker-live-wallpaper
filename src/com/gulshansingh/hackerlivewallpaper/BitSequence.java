@@ -105,9 +105,9 @@ public class BitSequence {
 			defaultTextSize = preferences.getInt(KEY_TEXT_SIZE,
 					R.integer.default_text_size);
 
-			double changeBitSpeedMultiplier = 100 / preferences.getInt(
+			double changeBitSpeedMultiplier = 100 / preferences.getDouble(
 					KEY_CHANGE_BIT_SPEED, R.integer.default_change_bit_speed);
-			double fallingSpeedMultiplier = preferences.getInt(
+			double fallingSpeedMultiplier = preferences.getDouble(
 					KEY_FALLING_SPEED, R.integer.default_falling_speed) / 100;
 
 			changeBitSpeed = (int) (DEFAULT_CHANGE_BIT_SPEED * changeBitSpeedMultiplier);
@@ -138,6 +138,11 @@ public class BitSequence {
 
 			public int getInt(String key, int defaultId) {
 				return preferences.getInt(key, res.getInteger(defaultId));
+			}
+
+			public double getDouble(String key, int defaultId) {
+				return (double) preferences.getInt(key,
+						res.getInteger(defaultId));
 			}
 		}
 	}
