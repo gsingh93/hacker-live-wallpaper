@@ -2,6 +2,7 @@ package com.gulshansingh.hackerlivewallpaper;
 
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_BIT_COLOR;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_CHANGE_BIT_SPEED;
+import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_ENABLE_DEPTH;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_FALLING_SPEED;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_NUM_BITS;
 import static com.gulshansingh.hackerlivewallpaper.SettingsFragment.KEY_TEXT_SIZE;
@@ -85,6 +86,7 @@ public class BitSequence {
 		private static int color;
 		private static int defaultTextSize;
 		private static int defaultFallingSpeed;
+		private static boolean depthEnabled;
 
 		private static int alphaIncrement;
 		private static int initialY;
@@ -112,6 +114,8 @@ public class BitSequence {
 
 			changeBitSpeed = (int) (DEFAULT_CHANGE_BIT_SPEED * changeBitSpeedMultiplier);
 			defaultFallingSpeed = (int) (defaultTextSize * fallingSpeedMultiplier);
+
+			depthEnabled = preferences.getBoolean(KEY_ENABLE_DEPTH, true);
 
 			alphaIncrement = MAX_ALPHA / numBits;
 			initialY = -1 * defaultTextSize * numBits;
@@ -144,6 +148,10 @@ public class BitSequence {
 				return (double) preferences.getInt(key,
 						res.getInteger(defaultId));
 			}
+
+			public boolean getBoolean(String key, boolean defaultVal) {
+				return preferences.getBoolean(key, defaultVal);
+			}
 		}
 	}
 
@@ -173,17 +181,22 @@ public class BitSequence {
 	};
 
 	private void setDepth() {
-		double factor = r.nextDouble() * (1 - .8) + .8;
-		style.textSize = (int) (Style.defaultTextSize * factor);
-		style.fallingSpeed = (int) (Style.defaultFallingSpeed * Math.pow(
-				factor, 4));
-
-		if (factor > .93) {
-			style.maskFilter = regularFilter;
-		} else if (factor <= .93 && factor >= .87) {
-			style.maskFilter = slightBlurFilter;
+		if (!Style.depthEnabled) {
+			style.textSize = Style.defaultTextSize;
+			style.fallingSpeed = Style.defaultFallingSpeed;
 		} else {
-			style.maskFilter = blurFilter;
+			double factor = r.nextDouble() * (1 - .8) + .8;
+			style.textSize = (int) (Style.defaultTextSize * factor);
+			style.fallingSpeed = (int) (Style.defaultFallingSpeed * Math.pow(
+					factor, 4));
+
+			if (factor > .93) {
+				style.maskFilter = regularFilter;
+			} else if (factor <= .93 && factor >= .87) {
+				style.maskFilter = slightBlurFilter;
+			} else {
+				style.maskFilter = blurFilter;
+			}
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
+import org.holoeverywhere.preference.CheckBoxPreference;
 import org.holoeverywhere.preference.PreferenceFragment;
 import org.holoeverywhere.preference.PreferenceManager;
 import org.holoeverywhere.preference.SharedPreferences;
@@ -18,7 +19,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class SettingsFragment extends PreferenceFragment {
 
 	public static final String KEY_BACKGROUND_COLOR = "background_color";
-
+	public static final String KEY_ENABLE_DEPTH = "enable_depth";
 	public static final String KEY_TEXT_SIZE = "text_size";
 	public static final String KEY_CHANGE_BIT_SPEED = "change_bit_speed";
 	public static final String KEY_FALLING_SPEED = "falling_speed";
@@ -26,8 +27,9 @@ public class SettingsFragment extends PreferenceFragment {
 	public static final String KEY_BIT_COLOR = "bit_color";
 
 	/** Keys for preferences that should be refreshed */
-	private static final List<String> mRefreshKeys = Arrays.asList(KEY_NUM_BITS,
-			KEY_FALLING_SPEED, KEY_CHANGE_BIT_SPEED, KEY_TEXT_SIZE);
+	private static final List<String> mRefreshKeys = Arrays.asList(
+			KEY_NUM_BITS, KEY_FALLING_SPEED, KEY_CHANGE_BIT_SPEED,
+			KEY_TEXT_SIZE);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,9 @@ public class SettingsFragment extends PreferenceFragment {
 		defaultColor = getResources()
 				.getColor(R.color.default_background_color);
 		backgroundPref.onColorChanged(defaultColor);
+
+		CheckBoxPreference depthEnabledPref = (CheckBoxPreference) findPreference(KEY_ENABLE_DEPTH);
+		depthEnabledPref.setChecked(true);
 	}
 
 	@Override

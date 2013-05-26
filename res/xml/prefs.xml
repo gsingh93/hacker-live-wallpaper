@@ -35,11 +35,16 @@
         holo:key="bit_color"
         holo:summary="Choose the bit color"
         holo:title="Bit Color" />
-    
     <net.margaritov.preference.colorpicker.ColorPickerPreference
         holo:defaultValue="@color/default_background_color"
         holo:key="background_color"
         holo:summary="Choose the background color"
         holo:title="Background Color" />
+
+    <CheckBoxPreference
+        holo:defaultValue="true"
+        holo:key="enable_depth"
+        holo:summary="Make some sequences appear to be behind others"
+        holo:title="Enable Depth" />
 
 </PreferenceScreen>
