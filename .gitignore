@@ -4,4 +4,4 @@ manifest-merger-release-report.txt
 .gradle
 local.properties
 /.idea
-/build
+build
