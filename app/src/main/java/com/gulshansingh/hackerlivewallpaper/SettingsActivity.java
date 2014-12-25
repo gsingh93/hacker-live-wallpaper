@@ -1,8 +1,13 @@
 package com.gulshansingh.hackerlivewallpaper;
 
+import android.app.WallpaperManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -31,6 +36,27 @@ public class SettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.prefs);
+
+        Preference button = (Preference) getPreferenceManager().findPreference("set_as_wallpaper");
+        if (button != null) {
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference pref) {
+                    Intent i = new Intent();
+                    if(Build.VERSION.SDK_INT > 15){
+                        i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+
+                        String p = HackerWallpaperService.class.getPackage().getName();
+                        String c = HackerWallpaperService.class.getCanonicalName();
+                        i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
+                    } else {
+                        i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
+                    }
+                    startActivity(i);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override

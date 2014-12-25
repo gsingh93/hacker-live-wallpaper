@@ -3,6 +3,10 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <Preference
+        android:title="Set as wallpaper"
+        android:key="set_as_wallpaper" />
+
     <com.gulshansingh.hackerlivewallpaper.settings.NumberSeekBarPreference
         custom:mymax="15"
         custom:mymin="1"
