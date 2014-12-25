@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.gulshansingh.hackerlivewallpaper.settings.NumberSeekBarPreference
+        custom:mymax="15"
+        custom:mymin="1"
+        android:defaultValue="@integer/default_num_bits"
+        android:key="num_bits"
+        android:title="Number of Bits" />
+
+    <com.gulshansingh.hackerlivewallpaper.settings.PercentSeekBarPreference
+        custom:mymax="200"
+        custom:mymin="50"
+        android:defaultValue="@integer/default_falling_speed"
+        android:key="falling_speed"
+        android:title="Falling Speed" />
+    <com.gulshansingh.hackerlivewallpaper.settings.PercentSeekBarPreference
+        custom:mymax="200"
+        custom:mymin="50"
+        android:defaultValue="@integer/default_change_bit_speed"
+        android:key="change_bit_speed"
+        android:title="Bit Change Speed" />
+
+    <com.gulshansingh.hackerlivewallpaper.settings.NumberSeekBarPreference
+        custom:mymax="50"
+        custom:mymin="10"
+        android:defaultValue="@integer/default_text_size"
+        android:key="text_size"
+        android:title="Bit Text Size" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:defaultValue="@color/default_bit_color"
+        android:key="bit_color"
+        android:summary="Choose the bit color"
+        android:title="Bit Color" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:defaultValue="@color/default_background_color"
+        android:key="background_color"
+        android:summary="Choose the background color"
+        android:title="Background Color" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="enable_depth"
+        android:summary="Make some sequences appear to be behind others"
+        android:title="Enable Depth" />
+
+</PreferenceScreen>
