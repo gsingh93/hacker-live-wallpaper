@@ -108,8 +108,8 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         BitSequence.configure(this);
         HackerWallpaperService.reset();
     }
