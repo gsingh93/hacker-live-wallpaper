@@ -23,6 +23,9 @@ import java.util.List;
 
 public class CharacterSetPreference extends DialogPreference {
 
+    public static final String BINARY_CHAR_SET = "01";
+    public static final String MATRIX_CHAR_SET = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
+
     private EditText editText;
     private Spinner spinner;
 
@@ -93,10 +96,10 @@ public class CharacterSetPreference extends DialogPreference {
     private void updateEditText(String characterSetName) {
         String characterSet;
         if (characterSetName.equals("Binary")) {
-            characterSet = "01";
+            characterSet = BINARY_CHAR_SET;
             editText.setEnabled(false);
         } else if (characterSetName.equals("Matrix")) {
-            characterSet = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
+            characterSet = MATRIX_CHAR_SET;
             editText.setEnabled(false);
         } else if (characterSetName.equals("Custom")) {
             editText.setEnabled(true);

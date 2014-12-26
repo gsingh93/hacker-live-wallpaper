@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
 
+import com.gulshansingh.hackerlivewallpaper.settings.CharacterSetPreference;
 import com.gulshansingh.hackerlivewallpaper.thirdparty.ArrayDeque;
 
 import java.util.Random;
@@ -68,7 +69,7 @@ public class BitSequence {
 			.newSingleThreadScheduledExecutor();
 
 	/** The characters to use in the sequence */
-	private static final String[] symbols = { "0", "1" };
+	private static String[] symbols = null;
 
 	/** Describes the style of the sequence */
 	private final Style style = new Style();
@@ -97,6 +98,24 @@ public class BitSequence {
 		private Paint paint = new Paint();
 
 		public static void initParameters(Context context) {
+            SharedPreferences sp = PreferenceManager
+                    .getDefaultSharedPreferences(context);
+            String charSetName = sp.getString("character_set_name", "Binary");
+            String charSet;
+            if (charSetName.equals("Binary")) {
+                charSet = CharacterSetPreference.BINARY_CHAR_SET;
+            } else if (charSetName.equals("Matrix")) {
+                charSet = CharacterSetPreference.MATRIX_CHAR_SET;
+            } else if (charSetName.equals("Custom")) {
+                charSet = sp.getString("custom_character_set", "");
+                if (charSet.length() == 0) {
+                    throw new RuntimeException("Character set length can't be 0");
+                }
+            } else {
+                throw new RuntimeException("Invalid character set");
+            }
+            symbols = charSet.split("(?!^)");
+
 			PreferenceUtility preferences = new PreferenceUtility(context);
 
 			numBits = preferences.getInt(KEY_NUM_BITS,
