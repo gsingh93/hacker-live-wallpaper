@@ -32,8 +32,7 @@ public abstract class SeekBarPreference extends DialogPreference implements
 	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
 
@@ -96,8 +95,7 @@ public abstract class SeekBarPreference extends DialogPreference implements
 
 	@Override
 	public void refresh(Context context) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		currentVal = preferences.getInt(key, defaultVal);
 		setSummary(transform(currentVal));
 	}

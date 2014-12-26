@@ -26,11 +26,12 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String KEY_FALLING_SPEED = "falling_speed";
     public static final String KEY_NUM_BITS = "num_bits";
     public static final String KEY_BIT_COLOR = "bit_color";
+    public static final String KEY_CHARACTER_SET_PREFS = "character_set_prefs";
 
     /** Keys for preferences that should be refreshed */
     private static final List<String> mRefreshKeys = Arrays.asList(
             KEY_NUM_BITS, KEY_FALLING_SPEED, KEY_CHANGE_BIT_SPEED,
-            KEY_TEXT_SIZE);
+            KEY_TEXT_SIZE, KEY_CHARACTER_SET_PREFS);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.prefs);
 
         PreferenceManager pm = getPreferenceManager();
-        Preference characterSetPrefs = (Preference) pm.findPreference("character_set_prefs");
+        Preference characterSetPrefs = (Preference) pm.findPreference(KEY_CHARACTER_SET_PREFS);
         String characterSet = pm.getSharedPreferences().getString("character_set_name", "Binary");
         characterSetPrefs.setSummary("Character set is " + characterSet);
 
@@ -79,6 +80,7 @@ public class SettingsActivity extends PreferenceActivity {
         return true;
     }
 
+    /** Sets the preferences to their default values without updating the GUI */
     private void resetToDefaults() {
         SharedPreferences preferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
@@ -88,6 +90,7 @@ public class SettingsActivity extends PreferenceActivity {
         PreferenceManager.setDefaultValues(this, R.xml.prefs, true);
     }
 
+    /** Initializes the GUI to match the preferences */
     private void refreshPreferences() {
         for (String key : mRefreshKeys) {
             ((Refreshable) getPreferenceScreen().findPreference(key))
@@ -105,6 +108,12 @@ public class SettingsActivity extends PreferenceActivity {
 
         CheckBoxPreference depthEnabledPref = (CheckBoxPreference) findPreference(KEY_ENABLE_DEPTH);
         depthEnabledPref.setChecked(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        refreshPreferences();
     }
 
     @Override

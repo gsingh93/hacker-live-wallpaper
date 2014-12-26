@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,11 +18,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.gulshansingh.hackerlivewallpaper.R;
+import com.gulshansingh.hackerlivewallpaper.Refreshable;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CharacterSetPreference extends DialogPreference {
+public class CharacterSetPreference extends DialogPreference implements Refreshable {
 
     public static final String BINARY_CHAR_SET = "01";
     public static final String MATRIX_CHAR_SET = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
@@ -110,6 +112,12 @@ public class CharacterSetPreference extends DialogPreference {
         }
 
         editText.setText(characterSet);
+    }
+
+    @Override
+    public void refresh(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        setSummary("Character set is " + sp.getString("character_set_name", "Binary"));
     }
 
     @Override
