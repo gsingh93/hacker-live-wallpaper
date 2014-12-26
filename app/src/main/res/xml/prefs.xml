@@ -34,6 +34,11 @@
         android:key="text_size"
         android:title="Bit Text Size" />
 
+    <com.gulshansingh.hackerlivewallpaper.settings.CharacterSetPreference
+        android:key="character_set_prefs"
+        android:persistent="false"
+        android:title="Character Set" />
+
     <net.margaritov.preference.colorpicker.ColorPickerPreference
         android:defaultValue="@color/default_bit_color"
         android:key="bit_color"

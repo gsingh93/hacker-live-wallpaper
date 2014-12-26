@@ -37,26 +37,29 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.prefs);
 
-        Preference button = (Preference) getPreferenceManager().findPreference("set_as_wallpaper");
-        if (button != null) {
-            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference pref) {
-                    Intent i = new Intent();
-                    if (Build.VERSION.SDK_INT > 15) {
-                        i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+        PreferenceManager pm = getPreferenceManager();
+        Preference characterSetPrefs = (Preference) pm.findPreference("character_set_prefs");
+        String characterSet = pm.getSharedPreferences().getString("character_set_name", "Binary");
+        characterSetPrefs.setSummary("Character set is " + characterSet);
 
-                        String p = HackerWallpaperService.class.getPackage().getName();
-                        String c = HackerWallpaperService.class.getCanonicalName();
-                        i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
-                    } else {
-                        i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
-                    }
-                    startActivity(i);
-                    return true;
+        Preference setAsWallpaper = (Preference) pm.findPreference("set_as_wallpaper");
+        setAsWallpaper.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference pref) {
+                Intent i = new Intent();
+                if (Build.VERSION.SDK_INT > 15) {
+                    i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+
+                    String p = HackerWallpaperService.class.getPackage().getName();
+                    String c = HackerWallpaperService.class.getCanonicalName();
+                    i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
+                } else {
+                    i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
                 }
-            });
-        }
+                startActivity(i);
+                return true;
+            }
+        });
     }
 
     @Override

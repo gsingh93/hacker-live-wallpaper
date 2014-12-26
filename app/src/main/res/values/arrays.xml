@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string-array name="character_sets">
+        <item>Binary</item>
+        <item>Matrix</item>
+        <item>Custom</item>
+    </string-array>
+</resources>

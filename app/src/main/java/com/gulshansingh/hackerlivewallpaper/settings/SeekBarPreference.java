@@ -35,7 +35,6 @@ public abstract class SeekBarPreference extends DialogPreference implements
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 
-        // TODO: R.styleable.Preference?
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
 
 		for (int i = 0; i < a.getIndexCount(); i++) {
