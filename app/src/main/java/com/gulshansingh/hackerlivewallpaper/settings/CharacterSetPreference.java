@@ -103,9 +103,13 @@ public class CharacterSetPreference extends DialogPreference implements Refresha
         } else if (characterSetName.equals("Matrix")) {
             characterSet = MATRIX_CHAR_SET;
             editText.setEnabled(false);
-        } else if (characterSetName.equals("Custom")) {
+        } else if (characterSetName.equals("Custom (random characters)")) {
             editText.setEnabled(true);
             characterSet = getSharedPreferences().getString("custom_character_set", "");
+            disablePosButton(characterSet.length() == 0);
+        } else if (characterSetName.equals("Custom (exact text)")) {
+            editText.setEnabled(true);
+            characterSet = getSharedPreferences().getString("custom_character_string", "");
             disablePosButton(characterSet.length() == 0);
         } else {
             throw new RuntimeException("Invalid character set name");
@@ -127,8 +131,10 @@ public class CharacterSetPreference extends DialogPreference implements Refresha
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             String characterSetName = spinner.getSelectedItem().toString();
             editor.putString("character_set_name", characterSetName);
-            if (characterSetName.equals("Custom")) {
+            if (characterSetName.equals("Custom (random characters)")) {
                 editor.putString("custom_character_set", editText.getText().toString());
+            } else if (characterSetName.equals("Custom (exact text)")) {
+                editor.putString("custom_character_string", editText.getText().toString());
             }
             editor.commit();
             setSummary("Character set is " + characterSetName);

@@ -4,6 +4,7 @@
     <string-array name="character_sets">
         <item>Binary</item>
         <item>Matrix</item>
-        <item>Custom</item>
+        <item>Custom (random characters)</item>
+        <item>Custom (exact text)</item>
     </string-array>
 </resources>
