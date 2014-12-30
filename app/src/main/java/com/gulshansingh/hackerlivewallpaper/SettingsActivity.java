@@ -1,6 +1,7 @@
 package com.gulshansingh.hackerlivewallpaper;
 
 import android.app.WallpaperManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,13 +49,18 @@ public class SettingsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference pref) {
                 Intent i = new Intent();
-                if (Build.VERSION.SDK_INT > 15) {
-                    i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+                try {
+                    if (Build.VERSION.SDK_INT > 15) {
+                        i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
 
-                    String p = HackerWallpaperService.class.getPackage().getName();
-                    String c = HackerWallpaperService.class.getCanonicalName();
-                    i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
-                } else {
+                        String p = HackerWallpaperService.class.getPackage().getName();
+                        String c = HackerWallpaperService.class.getCanonicalName();
+                        i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
+                    } else {
+                        i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
+                    }
+                } catch (ActivityNotFoundException e) {
+                    // Fallback to the old method, some devices greater than SDK 15 are crashing
                     i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
                 }
                 startActivity(i);
