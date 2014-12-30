@@ -73,8 +73,11 @@ public class BitSequence {
 
 	/** Describes the style of the sequence */
 	private final Style style = new Style();
+    private static String charSet;
+    private static boolean isRandom = true;
+    private int curChar = 0;
 
-	public static class Style {
+    public static class Style {
 		/** The default speed at which bits should be changed */
 		private static final int DEFAULT_CHANGE_BIT_SPEED = 100;
 
@@ -101,25 +104,35 @@ public class BitSequence {
             SharedPreferences sp = PreferenceManager
                     .getDefaultSharedPreferences(context);
             String charSetName = sp.getString("character_set_name", "Binary");
-            String charSet;
+            isRandom = true;
             if (charSetName.equals("Binary")) {
                 charSet = CharacterSetPreference.BINARY_CHAR_SET;
             } else if (charSetName.equals("Matrix")) {
                 charSet = CharacterSetPreference.MATRIX_CHAR_SET;
-            } else if (charSetName.equals("Custom")) {
+            } else if (charSetName.equals("Custom (random characters)")) {
                 charSet = sp.getString("custom_character_set", "");
                 if (charSet.length() == 0) {
                     throw new RuntimeException("Character set length can't be 0");
                 }
+            } else if (charSetName.equals("Custom (exact text)")) {
+                isRandom = false;
+                charSet = sp.getString("custom_character_string", "");
+                if (charSet.length() == 0) {
+                    throw new RuntimeException("Character set length can't be 0");
+                }
             } else {
-                throw new RuntimeException("Invalid character set");
+                throw new RuntimeException("Invalid character set" + charSetName);
             }
             symbols = charSet.split("(?!^)");
 
 			PreferenceUtility preferences = new PreferenceUtility(context);
 
-			numBits = preferences.getInt(KEY_NUM_BITS,
-					R.integer.default_num_bits);
+            if (isRandom) {
+                numBits = preferences.getInt(KEY_NUM_BITS,
+                        R.integer.default_num_bits);
+            } else {
+                numBits = charSet.length();
+            }
 			color = preferences
 					.getInt(KEY_BIT_COLOR, R.color.default_bit_color);
 			defaultTextSize = preferences.getInt(KEY_TEXT_SIZE,
@@ -241,10 +254,15 @@ public class BitSequence {
 	}
 
 	public BitSequence(int x) {
-		for (int i = 0; i < Style.numBits; i++) {
-			bits.add(getRandomBit(r));
+        curChar = 0;
+        for (int i = 0; i < Style.numBits; i++) {
+            if (isRandom) {
+                bits.add(getRandomBit(r));
+            } else {
+                // TODO: Disable numBits in settings if custom is selected
+                bits.addFirst(getNextBit());
+            }
 		}
-
 		this.x = x;
 		reset();
 	}
@@ -305,9 +323,17 @@ public class BitSequence {
 
 	/** Shifts the bits back by one and adds a new bit to the end */
 	synchronized private void changeBit() {
-		bits.removeFirst();
-		bits.addLast(getRandomBit(r));
+        if (isRandom) {
+            bits.removeFirst();
+            bits.addLast(getRandomBit(r));
+        }
 	}
+
+    private String getNextBit() {
+        String s = Character.toString(charSet.charAt(curChar));
+        curChar = (curChar + 1) % charSet.length();
+        return s;
+    }
 
 	/**
 	 * Gets a new random bit
