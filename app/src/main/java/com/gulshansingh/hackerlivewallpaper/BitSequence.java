@@ -121,7 +121,16 @@ public class BitSequence {
                     throw new RuntimeException("Character set length can't be 0");
                 }
             } else {
-                throw new RuntimeException("Invalid character set" + charSetName);
+                if (!charSetName.equals("Custom")) { // Legacy character set
+                    throw new RuntimeException("Invalid character set " + charSetName);
+                } else {
+                    sp.edit().putString("character_set_name", "Custom (random characters)")
+                            .commit();
+                    charSet = sp.getString("custom_character_set", "");
+                    if (charSet.length() == 0) {
+                        throw new RuntimeException("Character set length can't be 0");
+                    }
+                }
             }
             symbols = charSet.split("(?!^)");
 

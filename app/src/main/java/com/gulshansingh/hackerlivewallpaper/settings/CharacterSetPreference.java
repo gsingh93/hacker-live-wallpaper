@@ -112,7 +112,15 @@ public class CharacterSetPreference extends DialogPreference implements Refresha
             characterSet = getSharedPreferences().getString("custom_character_string", "");
             disablePosButton(characterSet.length() == 0);
         } else {
-            throw new RuntimeException("Invalid character set name");
+            if (!characterSetName.equals("Custom")) { // Legacy charset name
+                throw new RuntimeException("Invalid character set " + characterSetName);
+            } else {
+                getSharedPreferences().edit().putString("character_set_name", "Custom (random characters)")
+                        .commit();
+                editText.setEnabled(true);
+                characterSet = getSharedPreferences().getString("custom_character_set", "");
+                disablePosButton(characterSet.length() == 0);
+            }
         }
 
         editText.setText(characterSet);
