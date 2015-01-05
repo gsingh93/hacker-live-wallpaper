@@ -103,17 +103,21 @@ public class SettingsActivity extends PreferenceActivity {
                     .refresh(this);
         }
 
+        // We set the color to the color in the preferences to refresh the color preview
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         ColorPickerPreference bitPref = (ColorPickerPreference) findPreference(KEY_BIT_COLOR);
         int defaultColor = getResources().getColor(R.color.default_bit_color);
-        bitPref.onColorChanged(defaultColor);
+        int color = sp.getInt(KEY_BIT_COLOR, defaultColor);
+        bitPref.onColorChanged(color);
 
         ColorPickerPreference backgroundPref = (ColorPickerPreference) findPreference(KEY_BACKGROUND_COLOR);
         defaultColor = getResources()
                 .getColor(R.color.default_background_color);
-        backgroundPref.onColorChanged(defaultColor);
+        color = sp.getInt(KEY_BACKGROUND_COLOR, defaultColor);
+        backgroundPref.onColorChanged(color);
 
         CheckBoxPreference depthEnabledPref = (CheckBoxPreference) findPreference(KEY_ENABLE_DEPTH);
-        depthEnabledPref.setChecked(true);
+        depthEnabledPref.setChecked(sp.getBoolean(KEY_ENABLE_DEPTH, true));
     }
 
     @Override
