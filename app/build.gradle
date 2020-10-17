@@ -19,6 +19,6 @@ android {
 }
 
 dependencies {
-    implementation "androidx.annotation:annotation:1.1.0"
-    implementation project(':libraries:ColorPickerPreference')
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation project(":libs:ColorPickerPreference:ColorPickerPreference")
 }

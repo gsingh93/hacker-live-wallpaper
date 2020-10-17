@@ -1,0 +1,3 @@
+[submodule "android-ColorPickerPreference"]
+	path = libs/ColorPickerPreference
+	url = https://github.com/attenzione/android-ColorPickerPreference

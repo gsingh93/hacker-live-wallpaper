@@ -1,1 +1,1 @@
-include ':app', ':libraries:ColorPickerPreference'
+include ':app', ':libs:ColorPickerPreference:ColorPickerPreference'
