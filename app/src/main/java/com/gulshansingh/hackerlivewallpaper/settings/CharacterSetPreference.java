@@ -7,7 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.*;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;

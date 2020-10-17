@@ -1,7 +1,5 @@
 *.apk
-manifest-merger-release-report.txt
-*.iml
 .gradle
 local.properties
-/.idea
+.idea
 build
