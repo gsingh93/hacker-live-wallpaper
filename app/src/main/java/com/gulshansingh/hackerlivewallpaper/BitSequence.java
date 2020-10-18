@@ -7,7 +7,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import com.gulshansingh.hackerlivewallpaper.settings.CharacterSetPreference;
 import com.gulshansingh.hackerlivewallpaper.thirdparty.ArrayDeque;

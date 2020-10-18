@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
         android:title="Set as wallpaper"
         android:key="set_as_wallpaper" />
 
-    <com.gulshansingh.hackerlivewallpaper.settings.NumberSeekBarPreference
-        custom:mymax="15"
-        custom:mymin="1"
-        android:defaultValue="@integer/default_num_bits"
+    <!-- min and showSeekBarValue are AndroidX attributes -->
+    <SeekBarPreference
+        android:id="@+id/num_bits_preference"
         android:key="num_bits"
-        android:title="Number of Bits" />
+        android:title="Number of Bits"
+        android:defaultValue="10"
+        android:max="15"
+        custom:min="1"
+        custom:showSeekBarValue="true" />
 
     <com.gulshansingh.hackerlivewallpaper.settings.PercentSeekBarPreference
-        custom:mymax="200"
-        custom:mymin="50"
+        android:max="200"
         android:defaultValue="@integer/default_falling_speed"
         android:key="falling_speed"
-        android:title="Falling Speed" />
+        android:title="Falling Speed"
+        custom:showSeekBarValue="true"
+        custom:min="50" />
+
     <com.gulshansingh.hackerlivewallpaper.settings.PercentSeekBarPreference
-        custom:mymax="200"
-        custom:mymin="50"
+        android:max="200"
+        custom:min="50"
+        custom:showSeekBarValue="true"
         android:defaultValue="@integer/default_change_bit_speed"
         android:key="change_bit_speed"
         android:title="Bit Change Speed" />
 
-    <com.gulshansingh.hackerlivewallpaper.settings.NumberSeekBarPreference
-        custom:mymax="50"
-        custom:mymin="10"
-        android:defaultValue="@integer/default_text_size"
+    <SeekBarPreference
         android:key="text_size"
-        android:title="Bit Text Size" />
+        android:title="Text Size"
+        android:defaultValue="36"
+        android:max="100"
+        custom:min="10"
+        custom:showSeekBarValue="true" />
 
     <com.gulshansingh.hackerlivewallpaper.settings.CharacterSetPreference
-        android:key="character_set_prefs"
-        android:persistent="false"
-        android:title="Character Set" />
+            android:key="character_set_prefs"
+            android:persistent="false"
+            android:title="Character Set" />
 
     <net.margaritov.preference.colorpicker.ColorPickerPreference
         android:defaultValue="@color/default_bit_color"

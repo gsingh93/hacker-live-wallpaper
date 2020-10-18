@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <integer name="default_num_bits">10</integer>
     <integer name="default_text_size">36</integer>
     <integer name="default_falling_speed">100</integer>
     <integer name="default_change_bit_speed">100</integer>
-
 </resources>

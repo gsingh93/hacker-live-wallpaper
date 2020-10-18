@@ -3,7 +3,7 @@ package com.gulshansingh.hackerlivewallpaper;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Handler;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
 
@@ -89,8 +89,7 @@ public class HackerWallpaperService extends WallpaperService {
 
 		// TODO: Not all of the sequences need to be cleared
 		private void resetSequences() {
-			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			int color = preferences.getInt(KEY_BACKGROUND_COLOR, 0);
 			r = (color >> 16) & 0xFF;
 			g = (color >> 8) & 0xFF;
