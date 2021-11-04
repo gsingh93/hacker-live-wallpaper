@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId 'com.gulshansingh.hackerlivewallpaper'
         minSdkVersion 14
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 14
         versionName '1.8.3'
     }
@@ -16,11 +16,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'com.gulshansingh.hackerlivewallpaper'
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.preference:preference:1.1.1'
-    implementation 'com.google.android.material:material:1.2.1'
+    // Note: Upgrading this to 1.6.0 causes some build problems
+    implementation 'androidx.annotation:annotation:1.5.0'
+    implementation 'androidx.preference:preference:1.2.0'
+    // https://stackoverflow.com/a/73669760
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation project(":libs:ColorPickerPreference:ColorPickerPreference")
 }
